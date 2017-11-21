@@ -10,4 +10,8 @@ def parse_input(mousex,mousey,mouseClicked):
         if mouseClicked == True:
             playerInput.append(('buttonName','clicked'))
             screenmanagement.highlight_button(button)
+
+    else:
+        if mouseClicked == True:
+            screenmanagement.un_highlight_buttons()
     return playerInput

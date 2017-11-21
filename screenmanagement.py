@@ -55,18 +55,32 @@ def mouse_over_button(mousex, mousey):
     # loop through both panels
     for panel in panels:
         # loop through the list
-        for button in panel:
-            # if mouse coords are within button rect return button
-            if button[1].collidepoint(mousex, mousey) == True:
-                return button
+        for idx, button in enumerate(panel):
+            if idx > 0: # header isn't a button
+                # if mouse coords are within button rect return button
+                if button[1].collidepoint(mousex, mousey) == True:
+                    return button
     return None
 
 def highlight_button(button):
+    un_highlight_buttons()
     bottomLeft = button[1].bottomleft
     button[0] = BASICFONT.render(button[2], 1, TEXTCOLOR, BUTTONHIGHLIGHT)
     rect = button[0].get_rect()
     rect.bottomleft = bottomLeft
     button[1] = rect
+
+def un_highlight_buttons():
+    # loop through both panels
+    for panel in panels:
+        # loop through the list
+        for idx, button in enumerate(panel):
+            if idx > 0: # header isn't a button
+                bottomLeft = button[1].bottomleft
+                button[0] = BASICFONT.render(button[2], 1, TEXTCOLOR, BUTTONCOLOR)
+                rect = button[0].get_rect()
+                rect.bottomleft = bottomLeft
+                button[1] = rect
 
 def fill_background():
     DISPLAYSURFACE.fill(BGCOLOR)

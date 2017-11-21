@@ -8,7 +8,7 @@ def parse_input(mousex,mousey,mouseClicked):
     # check to see if the mouse is over a button
     if button != None:
         if mouseClicked == True:
-            playerInput.append(('buttonName','clicked'))
+            playerInput.append((button[2],'clicked'))
             screenmanagement.highlight_button(button)
 
     else:

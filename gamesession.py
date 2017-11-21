@@ -6,4 +6,6 @@ def init(screenManagement):
     screenmanagement = screenManagement
 
 def handle_input(playerInput):
-    variable = True
+    if playerInput:
+        # print input text
+        print playerInput[0][0]

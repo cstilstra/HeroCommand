@@ -32,6 +32,7 @@ def main():
             elif event.type == MOUSEBUTTONUP:
                 mousex, mousey = event.pos
                 mouseClicked = True
+
         # capture input
         playerInput = inputhandler.parse_input(mousex,mousey,mouseClicked)
         # update game

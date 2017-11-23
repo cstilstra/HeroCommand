@@ -15,6 +15,7 @@ TEXTCOLOR = WHITE
 leftPanel, rightPanel = [], []
 
 def init(pyGame, windowHeaderText):
+    # defines necessary components for display
     global BASICFONT, DISPLAYSURFACE
     pygame = pyGame
     BASICFONT = pygame.font.Font(None, 18)
@@ -37,32 +38,33 @@ def display_panels():
 
 def build_text_object_list(leftOffset, topOffset, textList, headerText):
     # returns a list of text object (surface and rectangle) tuples
-    textList.insert(0,headerText)
+    textList.insert(0,{'name':headerText, 'type':"header"})
     textObjectList = []
     for text in textList:
-        textSurf = BASICFONT.render(text, 1, TEXTCOLOR, BUTTONCOLOR)
+        textSurf = BASICFONT.render(text['name'], 1, TEXTCOLOR, BUTTONCOLOR)
         textRect = textSurf.get_rect()
         textRect.bottomleft = (leftOffset,topOffset + (20 * int(textList.index(text))))
         textObjectList.append([textSurf, textRect, text])
     return textObjectList
 
 def display_text_object_list(textObjects):
-    # iterate through textObjects and blit them
+    # iterates through textObjects and blit them
     for text in textObjects:
         DISPLAYSURFACE.blit(text[0], text[1])
 
 def mouse_over_button(mousex, mousey):
-    # loop through both panels
+    # returns the button the mouse is over
+    # or None if the mouse is not over a button
     for panel in panels:
-        # loop through the list
         for idx, button in enumerate(panel):
             if idx > 0: # header isn't a button
-                # if mouse coords are within button rect return button
+                # if mouse coords are within button rect, return button
                 if button[1].collidepoint(mousex, mousey) == True:
                     return button
     return None
 
 def highlight_button(button):
+    # changes a single button to highlight color
     un_highlight_buttons()
     bottomLeft = button[1].bottomleft
     button[0] = BASICFONT.render(button[2], 1, TEXTCOLOR, BUTTONHIGHLIGHT)
@@ -71,16 +73,20 @@ def highlight_button(button):
     button[1] = rect
 
 def un_highlight_buttons():
-    # loop through both panels
+    # changes all buttons back to default colors
     for panel in panels:
-        # loop through the list
-        for idx, button in enumerate(panel):
-            if idx > 0: # header isn't a button
-                bottomLeft = button[1].bottomleft
-                button[0] = BASICFONT.render(button[2], 1, TEXTCOLOR, BUTTONCOLOR)
-                rect = button[0].get_rect()
-                rect.bottomleft = bottomLeft
-                button[1] = rect
+        un_highlight_panel(panel)
+
+def un_highlight_panel(panel):
+    # changes all buttons in a panel back to default colors
+    for idx, button in enumerate(panel):
+        if idx > 0: # header isn't a button
+            bottomLeft = button[1].bottomleft
+            button[0] = BASICFONT.render(button[2], 1, TEXTCOLOR, BUTTONCOLOR)
+            rect = button[0].get_rect()
+            rect.bottomleft = bottomLeft
+            button[1] = rect
 
 def fill_background():
+    # fills the background with the assigned color
     DISPLAYSURFACE.fill(BGCOLOR)

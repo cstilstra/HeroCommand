@@ -3,17 +3,18 @@
 
 import heroes, missions
 
-global selectedHero, selectedMission
+global selectedHero, selectedMission, heroMasterList, missionMasterList
 
-def init(screenManagement):
-    global screenmanagement
-    screenmanagement = screenManagement
+def init():
+    # global screenmanagement
+    # screenmanagement = screenManagement
 
     # setup the heroes text object list
+    global heroMasterList, missionMasterList
     heroMasterList = heroes.get_heroes()
     # setup the mission text object list
     missionMasterList = missions.get_missions()
-    screenmanagement.fill_panels(heroMasterList, 'All Heroes: ', missionMasterList, 'All Missions: ')
+    # screenmanagement.fill_panels(heroMasterList, 'All Heroes: ', missionMasterList, 'All Missions: ')
 
 def handle_input(playerInput):
     if playerInput:
@@ -24,3 +25,9 @@ def handle_input(playerInput):
             if playerInput[0]['type'] == "mission":
                 selectedMission = playerInput[0]
                 print "Selected Mission: " + selectedMission['name']
+
+def get_heroes():
+    return heroMasterList
+
+def get_missions():
+    return missionMasterList

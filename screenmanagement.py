@@ -13,14 +13,19 @@ BUTTONHIGHLIGHT = GRAY
 TEXTCOLOR = WHITE
 
 leftPanel, rightPanel = [], []
+session = None
 
-def init(pyGame, windowHeaderText):
-    # defines necessary components for display
+def init(pyGame, gameSession, windowHeaderText):
     global BASICFONT, DISPLAYSURFACE
+    global session
+    session = gameSession
     pygame = pyGame
     BASICFONT = pygame.font.Font(None, 18)
     DISPLAYSURFACE = pygame.display.set_mode((WINDOWWIDTH,WINDOWHEIGHT))
     pygame.display.set_caption(windowHeaderText)
+    heroes = session.get_heroes()
+    missions = session.get_missions()
+    fill_panels(heroes, "All Heroes: ", missions, "All Missions: ")
 
 def fill_panels(leftList, leftHeader, rightList, rightHeader):
     # creates text object lists and from args and puts them into respective panels

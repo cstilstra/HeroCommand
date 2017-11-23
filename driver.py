@@ -8,9 +8,9 @@ def main():
     global FPSCLOCK
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
-    screenmanagement.init(pygame, 'Hero Command')
+    gamesession.init()
+    screenmanagement.init(pygame, gamesession, 'Hero Command')
     inputhandler.init(screenmanagement)
-    gamesession.init(screenmanagement)
 
     mousex = 0 # used to store x coordinate of mouse event
     mousey = 0 # used to store y coordinate of mouse event

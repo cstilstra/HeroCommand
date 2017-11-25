@@ -1,7 +1,8 @@
 # Game Session
 # tracks the state of the current game session
 
-import heroes, missions
+import heroes
+import missions
 
 
 def init():

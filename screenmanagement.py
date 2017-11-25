@@ -79,7 +79,7 @@ def mouse_over_button(mouse_x, mouse_y):
     # or None if the mouse is not over a button
     for panel in panels:
         for idx, button in enumerate(panel):
-            if idx > 0: # header isn't a button
+            if idx > 0:  # header isn't a button
                 # if mouse coords are within button rect, return button
                 if button[1].collidepoint(mouse_x, mouse_y) == True:
                     return button
@@ -88,10 +88,10 @@ def mouse_over_button(mouse_x, mouse_y):
 
 def highlight_button(button):
     # changes a single button to highlight color
-    bottomLeft = button[1].bottomleft
+    bottom_left = button[1].bottomleft
     button[0] = BASICFONT.render(button[2]['name'], 1, TEXTCOLOR, BUTTONHIGHLIGHT)
     rect = button[0].get_rect()
-    rect.bottomleft = bottomLeft
+    rect.bottomleft = bottom_left
     button[1] = rect
 
 
@@ -104,11 +104,11 @@ def un_highlight_buttons():
 def un_highlight_panel(panel):
     # changes all buttons in a panel back to default colors
     for idx, button in enumerate(panel):
-        if idx > 0: # header isn't a button
-            bottomLeft = button[1].bottomleft
+        if idx > 0:  # header isn't a button
+            bottom_left = button[1].bottomleft
             button[0] = BASICFONT.render(button[2]['name'], 1, TEXTCOLOR, BUTTONCOLOR)
             rect = button[0].get_rect()
-            rect.bottomleft = bottomLeft
+            rect.bottomleft = bottom_left
             button[1] = rect
 
 

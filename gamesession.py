@@ -5,36 +5,40 @@ import heroes, missions
 
 
 def init():
-    global selectedHero, selectedMission, heroMasterList, missionMasterList
-    selectedHero = []
-    selectedMission = []
-    heroMasterList = heroes.get_heroes()
-    missionMasterList = missions.get_missions()
+    global selected_hero, selected_mission, hero_master_list, mission_master_list
+    selected_hero = []
+    selected_mission = []
+    hero_master_list = heroes.get_heroes()
+    mission_master_list = missions.get_missions()
 
 
-def handle_input(playerInput):
-    global selectedHero, selectedMission
-    if playerInput:
-        if playerInput[1] == "clicked":
-            if playerInput[0][2]['type'] == "hero":
-                selectedHero = playerInput[0]
-                print "Selected Hero: " + selectedHero[2]['name']
-            if playerInput[0][2]['type'] == "mission":
-                selectedMission = playerInput[0]
-                print "Selected Mission: " + selectedMission[2]['name']
+def handle_input(player_input):
+    global selected_hero, selected_mission
+    if player_input:
+        if player_input[1] == "clicked":
+            if player_input[0][2]['type'] == "hero":
+                selected_hero = player_input[0]
+                print "Selected Hero: " + selected_hero[2]['name']
+            if player_input[0][2]['type'] == "mission":
+                selected_mission = player_input[0]
+                print "Selected Mission: " + selected_mission[2]['name']
 
 
 def get_heroes():
-    return heroMasterList
+    global hero_master_list
+    return hero_master_list
 
 
 def get_missions():
-    return missionMasterList
+    global mission_master_list
+    return mission_master_list
 
 
 def get_selected_hero():
-    return selectedHero
+    global selected_hero
+    return selected_hero
 
 
 def get_selected_mission():
-    return selectedMission
+    global selected_mission
+    return selected_mission

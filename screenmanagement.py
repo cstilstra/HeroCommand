@@ -12,28 +12,28 @@ BUTTONCOLOR = BLACK
 BUTTONHIGHLIGHT = GRAY
 TEXTCOLOR = WHITE
 
-leftPanel, rightPanel = [], []
+leftPanel, rightPanel, panels = [], [], []
 session = None
 
 
-def init(pyGame, gameSession, windowHeaderText):
+def init(py_game, game_session, window_header_text):
     global BASICFONT, DISPLAYSURFACE
     global session
-    session = gameSession
-    pygame = pyGame
+    session = game_session
+    pygame = py_game
     BASICFONT = pygame.font.Font(None, 18)
     DISPLAYSURFACE = pygame.display.set_mode((WINDOWWIDTH,WINDOWHEIGHT))
-    pygame.display.set_caption(windowHeaderText)
+    pygame.display.set_caption(window_header_text)
     heroes = session.get_heroes()
     missions = session.get_missions()
     fill_panels(heroes, "All Heroes: ", missions, "All Missions: ")
 
 
-def fill_panels(leftList, leftHeader, rightList, rightHeader):
+def fill_panels(left_list, left_header, right_list, right_header):
     # creates text object lists and from args and puts them into respective panels
     global leftPanel, rightPanel, panels
-    leftPanel = build_text_object_list(20, 35, leftList, leftHeader)
-    rightPanel = build_text_object_list(WINDOWWIDTH / 2, 35, rightList, rightHeader)
+    leftPanel = build_text_object_list(20, 35, left_list, left_header)
+    rightPanel = build_text_object_list(WINDOWWIDTH / 2, 35, right_list, right_header)
     panels = [leftPanel, rightPanel]
 
 
@@ -56,32 +56,32 @@ def update_highlights():
         highlight_button(mission)
 
 
-def build_text_object_list(leftOffset, topOffset, textList, headerText):
+def build_text_object_list(left_offset, top_offset, text_list, header_text):
     # returns a list of text object (surface and rectangle) tuples
-    textList.insert(0,{'name':headerText, 'type':"header"})
-    textObjectList = []
-    for text in textList:
-        textSurf = BASICFONT.render(text['name'], 1, TEXTCOLOR, BUTTONCOLOR)
-        textRect = textSurf.get_rect()
-        textRect.bottomleft = (leftOffset,topOffset + (20 * int(textList.index(text))))
-        textObjectList.append([textSurf, textRect, text])
-    return textObjectList
+    text_list.insert(0, {'name':header_text, 'type': "header"})
+    text_object_list = []
+    for text in text_list:
+        text_surf = BASICFONT.render(text['name'], 1, TEXTCOLOR, BUTTONCOLOR)
+        text_rect = text_surf.get_rect()
+        text_rect.bottomleft = (left_offset, top_offset + (20 * int(text_list.index(text))))
+        text_object_list.append([text_surf, text_rect, text])
+    return text_object_list
 
 
-def display_text_object_list(textObjects):
+def display_text_object_list(text_objects):
     # iterates through textObjects and blit them
-    for text in textObjects:
+    for text in text_objects:
         DISPLAYSURFACE.blit(text[0], text[1])
 
 
-def mouse_over_button(mousex, mousey):
+def mouse_over_button(mouse_x, mouse_y):
     # returns the button the mouse is over
     # or None if the mouse is not over a button
     for panel in panels:
         for idx, button in enumerate(panel):
             if idx > 0: # header isn't a button
                 # if mouse coords are within button rect, return button
-                if button[1].collidepoint(mousex, mousey) == True:
+                if button[1].collidepoint(mouse_x, mouse_y) == True:
                     return button
     return None
 

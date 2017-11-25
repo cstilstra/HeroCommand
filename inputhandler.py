@@ -1,13 +1,16 @@
-def init(screenManagement):
-    global screenmanagement
-    screenmanagement = screenManagement
+screen_management = None
 
 
-def parse_input(mousex, mousey, mouseClicked):
-    playerInput = None
-    button = screenmanagement.mouse_over_button(mousex, mousey)
+def init(screen_manager):
+    global screen_management
+    screen_management = screen_manager
+
+
+def parse_input(mousex, mousey, mouse_clicked):
+    player_input = None
+    button = screen_management.mouse_over_button(mousex, mousey)
     # check to see if the mouse is over a button
     if button is not None:
-        if mouseClicked is True:
-            playerInput = (button, 'clicked')
-    return playerInput
+        if mouse_clicked is True:
+            player_input = (button, 'clicked')
+    return player_input

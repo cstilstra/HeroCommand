@@ -12,7 +12,7 @@ BUTTONCOLOR = BLACK
 BUTTONHIGHLIGHT = GRAY
 TEXTCOLOR = WHITE
 
-leftPanel, rightPanel, panels = [], [], []
+leftPanel, rightPanel, bottomPanel, panels = [], [], [], []
 session = None
 
 
@@ -26,15 +26,16 @@ def init(py_game, game_session, window_header_text):
     pygame.display.set_caption(window_header_text)
     heroes = session.get_heroes()
     missions = session.get_missions()
-    fill_panels(heroes, "All Heroes: ", missions, "All Missions: ")
+    fill_panels(heroes, "All Heroes: ", missions, "All Missions: ", [{'name':"Hero:", 'type':"header", 'description':""}], "Selected: ")
 
 
-def fill_panels(left_list, left_header, right_list, right_header):
+def fill_panels(left_list, left_header, right_list, right_header, bottom_list, bottom_header):
     # creates text object lists and from args and puts them into respective panels
-    global leftPanel, rightPanel, panels
+    global leftPanel, rightPanel, bottomPanel, panels
     leftPanel = build_text_object_list(20, 35, left_list, left_header)
     rightPanel = build_text_object_list(WINDOWWIDTH / 2, 35, right_list, right_header)
-    panels = [leftPanel, rightPanel]
+    bottomPanel = build_text_object_list(20, WINDOWHEIGHT / 2, bottom_list, bottom_header)
+    panels = [leftPanel, rightPanel, bottomPanel]
 
 
 def display_panels():
@@ -43,6 +44,7 @@ def display_panels():
     fill_background()
     display_text_object_list(leftPanel)
     display_text_object_list(rightPanel)
+    display_text_object_list(bottomPanel)
 
 
 def update_highlights():

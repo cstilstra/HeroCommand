@@ -1,3 +1,5 @@
+import selectionpanel
+
 WINDOWWIDTH = 640 # size of window's width in pixels
 WINDOWHEIGHT = 480 # size of window's height in pixels
 
@@ -26,7 +28,8 @@ def init(py_game, game_session, window_header_text):
     pygame.display.set_caption(window_header_text)
     heroes = session.get_heroes()
     missions = session.get_missions()
-    fill_panels(heroes, "All Heroes: ", missions, "All Missions: ", [{'name':"Hero:", 'type':"header", 'description':""}], "Selected: ")
+    selection_panel = selectionpanel.get_panel_layout()
+    fill_panels(heroes, "All Heroes: ", missions, "All Missions: ", selection_panel, "Selected: ")
 
 
 def fill_panels(left_list, left_header, right_list, right_header, bottom_list, bottom_header):

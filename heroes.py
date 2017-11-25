@@ -2,8 +2,6 @@
 
 def get_heroes():
     # returns the master list of heroes
-    
-    #heroes = ["Firstington" , "Secondhandium" , "Thirdturdingsmith"]
 
     heroes = [
         {'name':"Firstington", 'type':"hero", 'description':"The first one who showed up."},

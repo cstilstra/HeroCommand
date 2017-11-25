@@ -2,7 +2,9 @@ import pygame, sys
 import screenmanagement, inputhandler, gamesession
 from pygame.locals import *
 
-FPS = 30 # frames per second, the general speed of the program
+FPS = 30  # frames per second, the general speed of the program
+FPSCLOCK = None
+
 
 def main():
     global FPSCLOCK
@@ -12,12 +14,12 @@ def main():
     screenmanagement.init(pygame, gamesession, 'Hero Command')
     inputhandler.init(screenmanagement)
 
-    mousex = 0 # used to store x coordinate of mouse event
-    mousey = 0 # used to store y coordinate of mouse event
+    mousex = 0  # used to store x coordinate of mouse event
+    mousey = 0  # used to store y coordinate of mouse event
 
-    while True: # main game loop
+    while True:  # main game loop
         mouseClicked = False
-        for event in pygame.event.get(): # event handling loop
+        for event in pygame.event.get():  # event handling loop
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()
@@ -29,7 +31,7 @@ def main():
         # end event handling loop
 
         # capture input
-        playerInput = inputhandler.parse_input(mousex,mousey,mouseClicked)
+        playerInput = inputhandler.parse_input(mousex, mousey, mouseClicked)
         # update game
         gamesession.handle_input(playerInput)
         # update screen
@@ -39,7 +41,6 @@ def main():
         pygame.display.update()
         FPSCLOCK.tick(FPS)
     # end main game loop
-
 
 
 if __name__ == '__main__':

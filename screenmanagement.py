@@ -15,6 +15,7 @@ TEXTCOLOR = WHITE
 leftPanel, rightPanel = [], []
 session = None
 
+
 def init(pyGame, gameSession, windowHeaderText):
     global BASICFONT, DISPLAYSURFACE
     global session
@@ -27,6 +28,7 @@ def init(pyGame, gameSession, windowHeaderText):
     missions = session.get_missions()
     fill_panels(heroes, "All Heroes: ", missions, "All Missions: ")
 
+
 def fill_panels(leftList, leftHeader, rightList, rightHeader):
     # creates text object lists and from args and puts them into respective panels
     global leftPanel, rightPanel, panels
@@ -34,12 +36,25 @@ def fill_panels(leftList, leftHeader, rightList, rightHeader):
     rightPanel = build_text_object_list(WINDOWWIDTH / 2, 35, rightList, rightHeader)
     panels = [leftPanel, rightPanel]
 
+
 def display_panels():
-    # clears the background, and then displays the left and right lists
-    # WARNING: fill_panels() must be called at some point before this method
+    # updates highlights, clears the background, and then displays the left and right lists
+    update_highlights()
     fill_background()
     display_text_object_list(leftPanel)
     display_text_object_list(rightPanel)
+
+
+def update_highlights():
+    # draws the correct background for each button
+    un_highlight_buttons()
+    hero = session.get_selected_hero()
+    mission = session.get_selected_mission()
+    if hero != []:
+        highlight_button(hero)
+    if mission != []:
+        highlight_button(mission)
+
 
 def build_text_object_list(leftOffset, topOffset, textList, headerText):
     # returns a list of text object (surface and rectangle) tuples
@@ -52,10 +67,12 @@ def build_text_object_list(leftOffset, topOffset, textList, headerText):
         textObjectList.append([textSurf, textRect, text])
     return textObjectList
 
+
 def display_text_object_list(textObjects):
     # iterates through textObjects and blit them
     for text in textObjects:
         DISPLAYSURFACE.blit(text[0], text[1])
+
 
 def mouse_over_button(mousex, mousey):
     # returns the button the mouse is over
@@ -68,29 +85,32 @@ def mouse_over_button(mousex, mousey):
                     return button
     return None
 
+
 def highlight_button(button):
     # changes a single button to highlight color
-    un_highlight_buttons()
     bottomLeft = button[1].bottomleft
-    button[0] = BASICFONT.render(button[2], 1, TEXTCOLOR, BUTTONHIGHLIGHT)
+    button[0] = BASICFONT.render(button[2]['name'], 1, TEXTCOLOR, BUTTONHIGHLIGHT)
     rect = button[0].get_rect()
     rect.bottomleft = bottomLeft
     button[1] = rect
+
 
 def un_highlight_buttons():
     # changes all buttons back to default colors
     for panel in panels:
         un_highlight_panel(panel)
 
+
 def un_highlight_panel(panel):
     # changes all buttons in a panel back to default colors
     for idx, button in enumerate(panel):
         if idx > 0: # header isn't a button
             bottomLeft = button[1].bottomleft
-            button[0] = BASICFONT.render(button[2], 1, TEXTCOLOR, BUTTONCOLOR)
+            button[0] = BASICFONT.render(button[2]['name'], 1, TEXTCOLOR, BUTTONCOLOR)
             rect = button[0].get_rect()
             rect.bottomleft = bottomLeft
             button[1] = rect
+
 
 def fill_background():
     # fills the background with the assigned color

@@ -29,7 +29,7 @@ def init(py_game, game_session, window_header_text):
     heroes = session.get_heroes()
     missions = session.get_missions()
     selection_panel = selectionpanel.get_panel_layout()
-    fill_panels(heroes, "All Heroes: ", missions, "All Missions: ", selection_panel, "Selected: ")
+    fill_panels(heroes, "All Heroes: ", missions, "All Missions: ", selection_panel, "Currently Selected ")
 
 
 def fill_panels(left_list, left_header, right_list, right_header, bottom_list, bottom_header):
@@ -42,8 +42,9 @@ def fill_panels(left_list, left_header, right_list, right_header, bottom_list, b
 
 
 def display_panels():
-    # updates highlights, clears the background, and then displays the left and right lists
+    # updates highlights, clears the background, and then displays the left, right, and bottom lists
     update_highlights()
+    update_selection_text()
     fill_background()
     display_text_object_list(leftPanel)
     display_text_object_list(rightPanel)
@@ -59,6 +60,16 @@ def update_highlights():
         highlight_button(hero)
     if mission != []:
         highlight_button(mission)
+
+
+def update_selection_text():
+    # updates the list that contains the text for the selection box
+    selected_hero = session.get_selected_hero()
+    selected_mission = session.get_selected_mission()
+    if selected_hero != []:
+        bottomPanel[1][2]['name'] = "Hero:  " + selected_hero[2]['name']
+    if selected_mission != []:
+        bottomPanel[2][2]['name'] = "Mission:  " + selected_mission[2]['name']
 
 
 def build_text_object_list(left_offset, top_offset, text_list, header_text):

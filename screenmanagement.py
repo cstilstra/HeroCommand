@@ -10,9 +10,10 @@ BLACK    = (  0,   0,   0)
 GRAY     = (127, 127, 127)
 
 BGCOLOR = NAVYBLUE
-BUTTONCOLOR = BLACK
-BUTTONHIGHLIGHT = GRAY
+TEXTBGCOLOR = BLACK
+TEXTBGHIGHLIGHT = GRAY
 TEXTCOLOR = WHITE
+BUTTONCOLOR = GRAY
 
 leftPanel, rightPanel, bottomPanel, panels = [], [], [], []
 session = None
@@ -42,7 +43,7 @@ def fill_panels(left_list, left_header, right_list, right_header, bottom_list, b
 
 
 def display_panels():
-    # updates highlights, clears the background, and then displays the left, right, and bottom lists
+    # updates highlights and selection text, clears the background, and then displays the left, right, and bottom lists
     update_highlights()
     update_selection_text()
     fill_background()
@@ -74,10 +75,14 @@ def update_selection_text():
 
 def build_text_object_list(left_offset, top_offset, text_list, header_text):
     # returns a list of text object (surface and rectangle) tuples
-    text_list.insert(0, {'name':header_text, 'type': "header"})
+    text_list.insert(0, {'name': header_text, 'type': "header"})
     text_object_list = []
     for text in text_list:
-        text_surf = BASICFONT.render(text['name'], 1, TEXTCOLOR, BUTTONCOLOR)
+        # "button" types get a different background color
+        if text['type'] == "button":
+            text_surf = BASICFONT.render(text['name'], 1, TEXTCOLOR, BUTTONCOLOR)
+        else:
+            text_surf = BASICFONT.render(text['name'], 1, TEXTCOLOR, TEXTBGCOLOR)
         text_rect = text_surf.get_rect()
         text_rect.bottomleft = (left_offset, top_offset + (20 * int(text_list.index(text))))
         text_object_list.append([text_surf, text_rect, text])
@@ -91,11 +96,11 @@ def display_text_object_list(text_objects):
 
 
 def mouse_over_button(mouse_x, mouse_y):
-    # returns the button the mouse is over
+    # returns the non header item(button) the mouse is over
     # or None if the mouse is not over a button
     for panel in panels:
         for idx, button in enumerate(panel):
-            if idx > 0:  # header isn't a button
+            if idx > 0:  # header can't be clicked on
                 # if mouse coords are within button rect, return button
                 if button[1].collidepoint(mouse_x, mouse_y) == True:
                     return button
@@ -105,7 +110,7 @@ def mouse_over_button(mouse_x, mouse_y):
 def highlight_button(button):
     # changes a single button to highlight color
     bottom_left = button[1].bottomleft
-    button[0] = BASICFONT.render(button[2]['name'], 1, TEXTCOLOR, BUTTONHIGHLIGHT)
+    button[0] = BASICFONT.render(button[2]['name'], 1, TEXTCOLOR, TEXTBGHIGHLIGHT)
     rect = button[0].get_rect()
     rect.bottomleft = bottom_left
     button[1] = rect
@@ -120,9 +125,9 @@ def un_highlight_buttons():
 def un_highlight_panel(panel):
     # changes all buttons in a panel back to default colors
     for idx, button in enumerate(panel):
-        if idx > 0:  # header isn't a button
+        if idx > 0 and button[2]['type'] != "button":  # header isn't a button
             bottom_left = button[1].bottomleft
-            button[0] = BASICFONT.render(button[2]['name'], 1, TEXTCOLOR, BUTTONCOLOR)
+            button[0] = BASICFONT.render(button[2]['name'], 1, TEXTCOLOR, TEXTBGCOLOR)
             rect = button[0].get_rect()
             rect.bottomleft = bottom_left
             button[1] = rect

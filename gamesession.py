@@ -23,6 +23,9 @@ def handle_input(player_input):
             if player_input[0][2]['type'] == "mission":
                 selected_mission = player_input[0]
                 print "Selected Mission: " + selected_mission[2]['name']
+            if player_input[0][2]['type'] == "button":
+                if player_input[0][2]['name'] == "Send Hero on Mission" and selected_hero != [] and selected_mission != []:
+                    print selected_hero[2]['name'] + " went on " + selected_mission[2]['name']
 
 
 def get_heroes():

@@ -7,6 +7,8 @@ import missions
 
 def init():
     global selected_hero, selected_mission, hero_master_list, mission_master_list
+    global player_purse
+    player_purse = 2000
     selected_hero = []
     selected_mission = []
     hero_master_list = heroes.get_heroes()
@@ -14,7 +16,7 @@ def init():
 
 
 def handle_input(player_input):
-    global selected_hero, selected_mission
+    global selected_hero, selected_mission, player_purse
     if player_input:
         if player_input[1] == "clicked":
             if player_input[0][2]['type'] == "hero":
@@ -25,7 +27,8 @@ def handle_input(player_input):
                 print "Selected Mission: " + selected_mission[2]['name']
             if player_input[0][2]['type'] == "button":
                 if player_input[0][2]['name'] == "Send Hero on Mission" and selected_hero != [] and selected_mission != []:
-                    print selected_hero[2]['name'] + " went on " + selected_mission[2]['name']
+                    hire_hero()
+                    run_mission()
 
 
 def get_heroes():
@@ -46,3 +49,24 @@ def get_selected_hero():
 def get_selected_mission():
     global selected_mission
     return selected_mission
+
+
+def hire_hero():
+    global selected_hero, selected_mission, player_purse
+    print "Player purse before hiring hero: " + str(player_purse)
+    hero_cost = selected_hero[2]['cost']
+    player_purse -= int(hero_cost)
+    print "Player purse after hiring hero: " + str(player_purse)
+
+
+def run_mission():
+    global player_purse
+    mission_cost = selected_mission[2]['cost']
+    player_purse -= int(mission_cost)
+    print "Player purse after paying up-front mission costs: " + str(player_purse)
+    print selected_hero[2]['name'] + " went on " + selected_mission[2]['name']
+    outcome = "Success!"
+    print "Outcome: " + outcome
+    mission_reward = selected_mission[2]['reward']
+    player_purse += int(mission_reward)
+    print "Player purse after mission success: " + str(player_purse)

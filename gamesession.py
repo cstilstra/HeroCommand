@@ -3,6 +3,7 @@
 
 import heroes
 import missions
+import random
 
 
 def init():
@@ -65,8 +66,22 @@ def run_mission():
     player_purse -= int(mission_cost)
     print "Player purse after paying up-front mission costs: " + str(player_purse)
     print selected_hero[2]['name'] + " went on " + selected_mission[2]['name']
-    outcome = "Success!"
-    print "Outcome: " + outcome
-    mission_reward = selected_mission[2]['reward']
-    player_purse += int(mission_reward)
-    print "Player purse after mission success: " + str(player_purse)
+    outcome = mission_success()
+    if outcome == True:
+        print "Outcome: Success!"
+        mission_reward = selected_mission[2]['reward']
+        player_purse += int(mission_reward)
+        print "Player purse after mission success: " + str(player_purse)
+    else:
+        print "Outcome: Failure."
+
+
+def mission_success():
+    hero_skill = int(selected_hero[2]['skill'])
+    hero_roll = random.randint(1, 100) + hero_skill
+    mission_difficulty = selected_mission[2]['difficulty']
+    print "Hero Skill: " + str(hero_skill) + " Hero Roll: " + str(hero_roll) + " Mission Difficulty: " + mission_difficulty
+    if hero_roll > int(mission_difficulty):
+        return True
+    else:
+        return False

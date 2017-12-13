@@ -9,17 +9,20 @@ def get_missions():
             'type': "mission",
             'description': "",
             'cost': "20",
-            'reward': "300"},
+            'reward': "260",
+            'difficulty': "40"},
         {'name': "Second dangerous mission",
             'type': "mission",
             'description': "",
             'cost': "30",
-            'reward': "375"},
+            'reward': "375",
+            'difficulty': "50"},
         {'name': "Third mission, this one's easy",
             'type': "mission",
             'description': "",
-            'cost': "100",
-            'reward': "800"}
+            'cost': "4",
+            'reward': "100",
+            'difficulty': "20"}
     ]
 
     return missions

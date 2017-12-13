@@ -1,48 +1,49 @@
-import pygame, sys
-import heroes, missions, screenmanagement, inputhandler, gamesession
+import pygame
+import sys
+import screenmanagement
+import inputhandler
+import gamesession
 from pygame.locals import *
 
-FPS = 30 # frames per second, the general speed of the program
+FPS = 30  # frames per second, the general speed of the program
+FPSCLOCK = None
+
 
 def main():
     global FPSCLOCK
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
-    screenmanagement.init(pygame, 'Hero Command')
+    gamesession.init()
+    screenmanagement.init(pygame, gamesession, 'Hero Command')
     inputhandler.init(screenmanagement)
-    gamesession.init(screenmanagement)
 
-    mousex = 0 # used to store x coordinate of mouse event
-    mousey = 0 # used to store y coordinate of mouse event
+    mouse_x = 0  # used to store x coordinate of mouse event
+    mouse_y = 0  # used to store y coordinate of mouse event
 
-    # setup the heroes text object list
-    heroMasterList = heroes.get_heroes()
-    # setup the mission text object list
-    missionMasterList = missions.get_missions()
-    screenmanagement.fill_panels(heroMasterList, 'All Heroes: ', missionMasterList, 'All Missions: ')
-
-    while True: # main game loop
-        mouseClicked = False
-        for event in pygame.event.get(): # event handling loop
+    while True:  # main game loop
+        mouse_clicked = False
+        for event in pygame.event.get():  # event handling loop
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()
             elif event.type == MOUSEMOTION:
-                mousex, mousey = event.pos
+                mouse_x, mouse_y = event.pos
             elif event.type == MOUSEBUTTONUP:
-                mousex, mousey = event.pos
-                mouseClicked = True
+                mouse_x, mouse_y = event.pos
+                mouse_clicked = True
+        # end event handling loop
+
         # capture input
-        playerInput = inputhandler.parse_input(mousex,mousey,mouseClicked)
+        player_input = inputhandler.parse_input(mouse_x, mouse_y, mouse_clicked)
         # update game
-        gamesession.handle_input(playerInput)
+        gamesession.handle_input(player_input)
         # update screen
         screenmanagement.display_panels()
 
         # Redraw the screen and wait a clock tick.
         pygame.display.update()
         FPSCLOCK.tick(FPS)
-
+    # end main game loop
 
 
 if __name__ == '__main__':

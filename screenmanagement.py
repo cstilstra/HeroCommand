@@ -1,4 +1,6 @@
 from Tkinter import *
+import selectedheropanel
+import selectedmissionpanel
 
 
 class Application(Frame):
@@ -6,7 +8,43 @@ class Application(Frame):
     session = None
     heroes = []
     missions = []
+    selected_hero = {}
+    selected_mission = {}
+    selected_hero_text = None
+    selected_mission_text = None
+    panel_width = 50
+    selectedheropanel
+    selectedmissionpanel
 
+    # handles the hero list selection event
+    # assigns the hero from the list to selected_hero
+    # updates selected_hero_text
+    def on_select_hero(self, event):
+        w = event.widget
+        index = int(w.curselection()[0])
+        name = w.get(index)
+        global heroes
+        global selected_hero
+        for hero in heroes:
+            if hero["name"] == name:
+                selected_hero = hero
+                selectedheropanel.update_selected_hero(selected_hero)
+
+    # handles the mission list selection event
+    # assigns the mission from the list to selected_mission
+    # updates selected_mission_text
+    def on_select_mission(self, event):
+        w = event.widget
+        index = int(w.curselection()[0])
+        name = w.get(index)
+        global missions
+        global selected_mission
+        for mission in missions:
+            if mission["name"] == name:
+                selected_mission = mission
+                selectedmissionpanel.update_selected_mission(selected_mission)
+
+    # builds the hero panel and fills the listbox with the heroes from the session
     def make_hero_list_panel(self, parent_frame):
         left_frame = Frame(parent_frame)
         left_frame.pack(side=LEFT)
@@ -18,14 +56,16 @@ class Application(Frame):
         heroes = session.get_heroes()
         print "Heroes:"
 
-        hero_list = Listbox(left_frame)
+        hero_list = Listbox(left_frame, width=self.panel_width)
         for hero in heroes:
             print hero
             hero_name = hero["name"]
             hero_list.insert(END, hero_name)
+        hero_list.bind('<<ListboxSelect>>', self.on_select_hero)
         hero_list.pack()
         print ""
 
+    # builds the mission panel and fills the listbox with the missions from the session
     def make_mission_list_panel(self, parent_frame):
         right_frame = Frame(parent_frame)
         right_frame.pack(side=RIGHT)
@@ -37,27 +77,22 @@ class Application(Frame):
         missions = session.get_missions()
         print "Missions:"
 
-        mission_list = Listbox(right_frame)
+        mission_list = Listbox(right_frame, width=self.panel_width)
         for mission in missions:
             print mission
             mission_name = mission["name"]
             mission_list.insert(END, mission_name)
+        mission_list.bind('<<ListboxSelect>>', self.on_select_mission)
         mission_list.pack()
         print ""
 
+    # builds the selected hero panel
     def make_selected_hero_panel(self, parent_frame):
-        left_frame = Frame(parent_frame)
-        left_frame.pack(side=LEFT)
+        selectedheropanel.init(parent_frame)
 
-        label = Label(left_frame, text="Selected Hero")
-        label.pack()
-
+    # builds the selected mission panel
     def make_selected_mission_panel(self, parent_frame):
-        right_frame = Frame(parent_frame)
-        right_frame.pack(side=RIGHT)
-
-        label = Label(right_frame, text="Selected Mission")
-        label.pack()
+        selectedmissionpanel.init(parent_frame)
 
     def create_widgets(self, game_session):
         global session
@@ -78,8 +113,3 @@ class Application(Frame):
         Frame.__init__(self, master)
         self.pack()
         self.create_widgets(game_session)
-
-
-# root = Tk()
-# app = Application(master=root)
-# app.mainloop()

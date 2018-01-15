@@ -103,11 +103,13 @@ class Application(Frame):
         self.make_hero_list_panel(top_frame)
         self.make_mission_list_panel(top_frame)
 
-        bottom_frame = Frame()
-        bottom_frame.pack(side=BOTTOM)
+        bottom_left = Frame()
+        bottom_left.pack(side=LEFT, expand=TRUE)
+        bottom_right = Frame()
+        bottom_right.pack(side=RIGHT, expand=TRUE)
 
-        self.make_selected_hero_panel(bottom_frame)
-        self.make_selected_mission_panel(bottom_frame)
+        self.make_selected_hero_panel(bottom_left)
+        self.make_selected_mission_panel(bottom_right)
 
     def __init__(self, game_session, master=None):
         Frame.__init__(self, master)

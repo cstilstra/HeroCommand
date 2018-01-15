@@ -8,28 +8,28 @@ hero_description_label = None
 
 def init(parent_frame):
     frame = Frame(parent_frame)
-    frame.pack(side=LEFT)
+    frame.pack()
 
     label = Label(frame, text="Selected Hero")
-    label.pack()
+    label.pack(anchor=W)
 
     name_label = Label(frame)
-    name_label.pack()
+    name_label.pack(anchor=W)
     global hero_name_label
     hero_name_label = name_label
 
     skill_label = Label(frame)
-    skill_label.pack()
+    skill_label.pack(anchor=W)
     global hero_skill_label
     hero_skill_label = skill_label
 
     cost_label = Label(frame)
-    cost_label.pack()
+    cost_label.pack(anchor=W)
     global hero_cost_label
     hero_cost_label = cost_label
 
     description_label = Label(frame)
-    description_label.pack()
+    description_label.pack(anchor=W)
     global hero_description_label
     hero_description_label = description_label
 

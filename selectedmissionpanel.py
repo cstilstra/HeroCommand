@@ -9,33 +9,33 @@ mission_description_label = None
 
 def init(parent_frame):
     frame = Frame(parent_frame)
-    frame.pack(side=RIGHT)
+    frame.pack(side=LEFT)
 
     label = Label(frame, text="Selected Mission")
-    label.pack()
+    label.pack(anchor=W)
 
     name_label = Label(frame)
-    name_label.pack()
+    name_label.pack(anchor=W)
     global mission_name_label
     mission_name_label = name_label
 
     difficulty_label = Label(frame)
-    difficulty_label.pack()
+    difficulty_label.pack(anchor=W)
     global mission_difficulty_label
     mission_difficulty_label = difficulty_label
 
     cost_label = Label(frame)
-    cost_label.pack()
+    cost_label.pack(anchor=W)
     global mission_cost_label
     mission_cost_label = cost_label
 
     reward_label = Label(frame)
-    reward_label.pack()
+    reward_label.pack(anchor=W)
     global mission_reward_label
     mission_reward_label = reward_label
 
     description_label = Label(frame)
-    description_label.pack()
+    description_label.pack(anchor=W)
     global mission_description_label
     mission_description_label = description_label
 

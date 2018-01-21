@@ -13,7 +13,8 @@ class Application(Frame):
     selected_mission = {}
     selected_hero_text = None
     selected_mission_text = None
-    panel_width = 70
+    width = 140
+    panel_width = width / 2
 
     # handles the hero list selection event
     # assigns the hero from the list to selected_hero
@@ -108,15 +109,15 @@ class Application(Frame):
         self.make_hero_list_panel(top_frame)
         self.make_mission_list_panel(top_frame)
 
-        middle_left = Frame()
-        middle_left.pack(side=LEFT, expand=TRUE)
-        middle_right = Frame()
-        middle_right.pack(side=RIGHT, expand=TRUE)
+        middle_left = Frame(width=self.width/3)
+        middle_left.pack(side=LEFT)  # , expand=TRUE)
+        middle_right = Frame(width=self.width/3)
+        middle_right.pack(side=RIGHT)  # , expand=TRUE)
 
         self.make_selected_hero_panel(middle_left)
         self.make_selected_mission_panel(middle_right)
 
-        bottom_frame = Frame()
+        bottom_frame = Frame(width=self.width/3)
         bottom_frame.pack(side=BOTTOM, expand=TRUE)
         self.make_bottom_panel(bottom_frame)
 

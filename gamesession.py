@@ -8,8 +8,9 @@ import random
 
 def init():
     global selected_hero, selected_mission, hero_master_list, mission_master_list
-    global player_purse
+    global player_purse, last_outcome
     player_purse = 2000
+    last_outcome = ""
     selected_hero = []
     selected_mission = []
     hero_master_list = heroes.get_heroes()
@@ -18,8 +19,6 @@ def init():
 
 def handle_click():
     global selected_hero, selected_mission
-    print selected_hero
-    print selected_mission
     if selected_hero != [] and selected_mission != []:
         hire_hero()
         run_mission()
@@ -59,6 +58,10 @@ def get_player_purse():
     global player_purse
     return player_purse
 
+def get_last_outcome():
+    global last_outcome
+    return last_outcome
+
 
 def hire_hero():
     global selected_hero, selected_mission, player_purse
@@ -69,7 +72,7 @@ def hire_hero():
 
 
 def run_mission():
-    global player_purse
+    global player_purse, last_outcome
     mission_cost = selected_mission['cost']
     player_purse -= int(mission_cost)
     print "Player purse after paying up-front mission costs: " + str(player_purse)
@@ -80,8 +83,10 @@ def run_mission():
         mission_reward = selected_mission['reward']
         player_purse += int(mission_reward)
         print "Player purse after mission success: " + str(player_purse)
+        last_outcome = "Success, " + mission_reward + " currency reward!"
     else:
         print "Outcome: Failure."
+        last_outcome = "Failure. Better luck next time."
 
 
 def mission_success():

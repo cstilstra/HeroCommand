@@ -33,6 +33,8 @@ def init(parent_frame):
     global hero_description_label
     hero_description_label = description_label
 
+
+# updates all selected hero labels
 def update_selected_hero(selected_hero):
     hero_name_label['text'] = "Name: " + selected_hero['name']
     hero_skill_label['text'] = "Skill Level: " + selected_hero['skill']

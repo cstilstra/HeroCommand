@@ -29,7 +29,7 @@ def init(parent_frame, session):
     # go button
     hire_button = Button(frame)
     hire_button["text"] = "Conduct Mission"
-    hire_button["command"] = button_click
+    hire_button["command"] = go_button_click
     hire_button.pack()
 
     # mission_outcome_label
@@ -39,7 +39,10 @@ def init(parent_frame, session):
     mission_outcome_label = label
 
 
-def button_click():
-    game_session.handle_click()
+# passes the go button click on to the session
+# updates player_purse_count_label
+# updates mission_outcome_label
+def go_button_click():
+    game_session.run_mission_click()
     player_purse_count_label["text"] = game_session.get_player_purse()
     mission_outcome_label["text"] = game_session.get_last_outcome()

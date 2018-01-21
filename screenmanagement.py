@@ -14,39 +14,46 @@ class Application(Frame):
     selected_hero_text = None
     selected_mission_text = None
     width = 140
-    panel_width = width / 2
 
     # handles the hero list selection event
     # assigns the hero from the list to selected_hero
     # updates selected_hero_text
     def on_select_hero(self, event):
-        w = event.widget
-        index = int(w.curselection()[0])
-        name = w.get(index)
-        global heroes
-        global selected_hero
-        for hero in heroes:
-            if hero["name"] == name:
-                selected_hero = hero
-                selectedheropanel.update_selected_hero(selected_hero)
-                session.set_selected_hero(hero)
+        if session.get_hired_hero() == []:
+            w = event.widget
+            try:
+                index = int(w.curselection()[0])
+                name = w.get(index)
+                global heroes
+                global selected_hero
+                for hero in heroes:
+                    if hero["name"] == name:
+                        selected_hero = hero
+                        selectedheropanel.update_selected_hero(selected_hero)
+                        session.set_selected_hero(hero)
+            except IndexError:
+                pass
 
     # handles the mission list selection event
     # assigns the mission from the list to selected_mission
     # updates selected_mission_text
     def on_select_mission(self, event):
         w = event.widget
-        index = int(w.curselection()[0])
-        name = w.get(index)
-        global missions
-        global selected_mission
-        for mission in missions:
-            if mission["name"] == name:
-                selected_mission = mission
-                selectedmissionpanel.update_selected_mission(selected_mission)
-                session.set_selected_mission(mission)
+        try:
+            index = int(w.curselection()[0])
+            name = w.get(index)
+            global missions
+            global selected_mission
+            for mission in missions:
+                if mission["name"] == name:
+                    selected_mission = mission
+                    selectedmissionpanel.update_selected_mission(selected_mission)
+                    session.set_selected_mission(mission)
+        except IndexError:
+            pass
 
-    # builds the hero panel and fills the listbox with the heroes from the session
+    # builds the hero panel
+    # fills the listbox with the heroes from the session
     def make_hero_list_panel(self, parent_frame):
         left_frame = Frame(parent_frame)
         left_frame.pack(side=LEFT)
@@ -58,7 +65,7 @@ class Application(Frame):
         heroes = session.get_heroes()
         print "Heroes:"
 
-        hero_list = Listbox(left_frame, width=self.panel_width)
+        hero_list = Listbox(left_frame, width=self.width / 2)
         for hero in heroes:
             print hero
             hero_name = hero["name"]
@@ -67,7 +74,8 @@ class Application(Frame):
         hero_list.pack()
         print ""
 
-    # builds the mission panel and fills the listbox with the missions from the session
+    # builds the mission panel
+    # fills the listbox with the missions from the session
     def make_mission_list_panel(self, parent_frame):
         right_frame = Frame(parent_frame)
         right_frame.pack(side=RIGHT)
@@ -79,7 +87,7 @@ class Application(Frame):
         missions = session.get_missions()
         print "Missions:"
 
-        mission_list = Listbox(right_frame, width=self.panel_width)
+        mission_list = Listbox(right_frame, width=self.width / 2)
         for mission in missions:
             print mission
             mission_name = mission["name"]
@@ -100,20 +108,20 @@ class Application(Frame):
     def make_bottom_panel(self, parent_frame):
         playerpanel.init(parent_frame, session)
 
+    # builds all of the panels
     def create_widgets(self, game_session):
         global session
         session = game_session
+
         top_frame = Frame()
         top_frame.pack(side=TOP)
-
         self.make_hero_list_panel(top_frame)
         self.make_mission_list_panel(top_frame)
 
         middle_left = Frame(width=self.width/3)
-        middle_left.pack(side=LEFT)  # , expand=TRUE)
+        middle_left.pack(side=LEFT)
         middle_right = Frame(width=self.width/3)
-        middle_right.pack(side=RIGHT)  # , expand=TRUE)
-
+        middle_right.pack(side=RIGHT)
         self.make_selected_hero_panel(middle_left)
         self.make_selected_mission_panel(middle_right)
 

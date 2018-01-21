@@ -40,6 +40,7 @@ def init(parent_frame):
     mission_description_label = description_label
 
 
+# updates all selected mission labels
 def update_selected_mission(selected_mission):
     mission_name_label['text'] = "Name: " + selected_mission['name']
     mission_difficulty_label['text'] = "Difficulty Level: " + selected_mission['difficulty']

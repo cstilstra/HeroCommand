@@ -1,6 +1,7 @@
 from Tkinter import *
 import selectedheropanel
 import selectedmissionpanel
+import playerpanel
 
 
 class Application(Frame):
@@ -12,9 +13,7 @@ class Application(Frame):
     selected_mission = {}
     selected_hero_text = None
     selected_mission_text = None
-    panel_width = 50
-    selectedheropanel
-    selectedmissionpanel
+    panel_width = 70
 
     # handles the hero list selection event
     # assigns the hero from the list to selected_hero
@@ -29,6 +28,7 @@ class Application(Frame):
             if hero["name"] == name:
                 selected_hero = hero
                 selectedheropanel.update_selected_hero(selected_hero)
+                session.set_selected_hero(hero)
 
     # handles the mission list selection event
     # assigns the mission from the list to selected_mission
@@ -43,6 +43,7 @@ class Application(Frame):
             if mission["name"] == name:
                 selected_mission = mission
                 selectedmissionpanel.update_selected_mission(selected_mission)
+                session.set_selected_mission(mission)
 
     # builds the hero panel and fills the listbox with the heroes from the session
     def make_hero_list_panel(self, parent_frame):
@@ -94,6 +95,10 @@ class Application(Frame):
     def make_selected_mission_panel(self, parent_frame):
         selectedmissionpanel.init(parent_frame)
 
+    # builds the bottom panel
+    def make_bottom_panel(self, parent_frame):
+        playerpanel.init(parent_frame, session)
+
     def create_widgets(self, game_session):
         global session
         session = game_session
@@ -103,13 +108,17 @@ class Application(Frame):
         self.make_hero_list_panel(top_frame)
         self.make_mission_list_panel(top_frame)
 
-        bottom_left = Frame()
-        bottom_left.pack(side=LEFT, expand=TRUE)
-        bottom_right = Frame()
-        bottom_right.pack(side=RIGHT, expand=TRUE)
+        middle_left = Frame()
+        middle_left.pack(side=LEFT, expand=TRUE)
+        middle_right = Frame()
+        middle_right.pack(side=RIGHT, expand=TRUE)
 
-        self.make_selected_hero_panel(bottom_left)
-        self.make_selected_mission_panel(bottom_right)
+        self.make_selected_hero_panel(middle_left)
+        self.make_selected_mission_panel(middle_right)
+
+        bottom_frame = Frame()
+        bottom_frame.pack(side=BOTTOM, expand=TRUE)
+        self.make_bottom_panel(bottom_frame)
 
     def __init__(self, game_session, master=None):
         Frame.__init__(self, master)

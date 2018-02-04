@@ -1,42 +1,34 @@
-from Tkinter import *
-
-hero_name_label = None
-hero_skill_label = None
-hero_cost_label = None
-hero_description_label = None
+import Tkinter as Tk
 
 
-def init(parent_frame):
-    frame = Frame(parent_frame)
-    frame.pack()
+class SelectedHeroPanel:
 
-    label = Label(frame, text="Selected Hero")
-    label.pack(anchor=W)
+    def __init__(self, parent_frame):
+        self.frame = Tk.Frame(parent_frame)
+        self.frame.pack()
 
-    name_label = Label(frame)
-    name_label.pack(anchor=W)
-    global hero_name_label
-    hero_name_label = name_label
+        self.label = Tk.Label(self.frame, text="Selected Hero")
+        self.label.pack(anchor=Tk.W)
 
-    skill_label = Label(frame)
-    skill_label.pack(anchor=W)
-    global hero_skill_label
-    hero_skill_label = skill_label
+        self.name_label = Tk.Label(self.frame)
+        self.name_label.pack(anchor=Tk.W)
+        self.hero_name_label = self.name_label
 
-    cost_label = Label(frame)
-    cost_label.pack(anchor=W)
-    global hero_cost_label
-    hero_cost_label = cost_label
+        self.skill_label = Tk.Label(self.frame)
+        self.skill_label.pack(anchor=Tk.W)
+        self.hero_skill_label = self.skill_label
 
-    description_label = Label(frame)
-    description_label.pack(anchor=W)
-    global hero_description_label
-    hero_description_label = description_label
+        self.cost_label = Tk.Label(self.frame)
+        self.cost_label.pack(anchor=Tk.W)
+        self.hero_cost_label = self.cost_label
 
+        self.description_label = Tk.Label(self.frame)
+        self.description_label.pack(anchor=Tk.W)
+        self.hero_description_label = self.description_label
 
-# updates all selected hero labels
-def update_selected_hero(selected_hero):
-    hero_name_label['text'] = "Name: " + selected_hero['name']
-    hero_skill_label['text'] = "Skill Level: " + selected_hero['skill']
-    hero_cost_label['text'] = "Hiring Cost: " + selected_hero['cost']
-    hero_description_label['text'] = "Description: " + selected_hero['description']
+    # updates all selected hero labels
+    def update_selected_hero(self, selected_hero):
+        self.hero_name_label['text'] = "Name: " + selected_hero['name']
+        self.hero_skill_label['text'] = "Skill Level: " + selected_hero['skill']
+        self.hero_cost_label['text'] = "Hiring Cost: " + selected_hero['cost']
+        self.hero_description_label['text'] = "Description: " + selected_hero['description']

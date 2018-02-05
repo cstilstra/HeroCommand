@@ -10,21 +10,17 @@ class SelectedHeroPanel:
         self.label = Tk.Label(self.frame, text="Selected Hero")
         self.label.pack(anchor=Tk.W)
 
-        self.name_label = Tk.Label(self.frame)
-        self.name_label.pack(anchor=Tk.W)
-        self.hero_name_label = self.name_label
+        self.hero_name_label = Tk.Label(self.frame)
+        self.hero_name_label.pack(anchor=Tk.W)
 
-        self.skill_label = Tk.Label(self.frame)
-        self.skill_label.pack(anchor=Tk.W)
-        self.hero_skill_label = self.skill_label
+        self.hero_skill_label = Tk.Label(self.frame)
+        self.hero_skill_label.pack(anchor=Tk.W)
 
-        self.cost_label = Tk.Label(self.frame)
-        self.cost_label.pack(anchor=Tk.W)
-        self.hero_cost_label = self.cost_label
+        self.hero_cost_label = Tk.Label(self.frame)
+        self.hero_cost_label.pack(anchor=Tk.W)
 
-        self.description_label = Tk.Label(self.frame)
-        self.description_label.pack(anchor=Tk.W)
-        self.hero_description_label = self.description_label
+        self.hero_description_label = Tk.Label(self.frame)
+        self.hero_description_label.pack(anchor=Tk.W)
 
     # updates all selected hero labels
     def update_selected_hero(self, selected_hero):

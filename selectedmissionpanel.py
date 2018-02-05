@@ -10,26 +10,20 @@ class SelectedMissionPanel:
         self.label = Tk.Label(self.frame, text="Selected Mission")
         self.label.pack(anchor=Tk.W)
 
-        # TODO: name_label is unnecessary and redundant (pattern repeated elsewhere)
-        self.name_label = Tk.Label(self.frame)
-        self.name_label.pack(anchor=Tk.W)
-        self.mission_name_label = self.name_label
+        self.mission_name_label = Tk.Label(self.frame)
+        self.mission_name_label.pack(anchor=Tk.W)
 
-        self.difficulty_label = Tk.Label(self.frame)
-        self.difficulty_label.pack(anchor=Tk.W)
-        self.mission_difficulty_label = self.difficulty_label
+        self.mission_difficulty_label = Tk.Label(self.frame)
+        self.mission_difficulty_label.pack(anchor=Tk.W)
 
-        self.cost_label = Tk.Label(self.frame)
-        self.cost_label.pack(anchor=Tk.W)
-        self.mission_cost_label = self.cost_label
+        self.mission_cost_label = Tk.Label(self.frame)
+        self.mission_cost_label.pack(anchor=Tk.W)
 
-        self.reward_label = Tk.Label(self.frame)
-        self.reward_label.pack(anchor=Tk.W)
-        self.mission_reward_label = self.reward_label
+        self.mission_reward_label = Tk.Label(self.frame)
+        self.mission_reward_label.pack(anchor=Tk.W)
 
-        self.description_label = Tk.Label(self.frame)
-        self.description_label.pack(anchor=Tk.W)
-        self.mission_description_label = self.description_label
+        self.mission_description_label = Tk.Label(self.frame)
+        self.mission_description_label.pack(anchor=Tk.W)
 
     # updates all selected mission labels
     def update_selected_mission(self, selected_mission):

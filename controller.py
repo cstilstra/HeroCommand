@@ -19,12 +19,11 @@ class Controller:
         self.root.mainloop()
 
     # handles the hero list selection event
-    # assigns the hero from the list to selected_hero
-    # updates selected_hero_text
     def on_select_hero(self, event):
         if self.session.get_hired_hero() == []:
             w = event.widget
             try:
+                # get the value at the current selection
                 index = int(w.curselection()[0])
                 name = w.get(index)
                 # identify which hero has been clicked on
@@ -36,11 +35,10 @@ class Controller:
                 pass
 
     # handles the mission list selection event
-    # assigns the mission from the list to selected_mission
-    # updates selected_mission_text
     def on_select_mission(self, event):
         w = event.widget
         try:
+            # get the value at the current selection
             index = int(w.curselection()[0])
             name = w.get(index)
             # identify which mission has been clicked on

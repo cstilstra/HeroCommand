@@ -10,6 +10,7 @@ class SelectedMissionPanel:
         self.label = Tk.Label(self.frame, text="Selected Mission")
         self.label.pack(anchor=Tk.W)
 
+        # TODO: name_label is unnecessary and redundant (pattern repeated elsewhere)
         self.name_label = Tk.Label(self.frame)
         self.name_label.pack(anchor=Tk.W)
         self.mission_name_label = self.name_label

@@ -1,7 +1,7 @@
 import Tkinter as Tk
 from selectedheropanel import SelectedHeroPanel
 from selectedmissionpanel import SelectedMissionPanel
-import playerpanel
+from playerpanel import PlayerPanel
 
 
 class MainView:
@@ -12,6 +12,7 @@ class MainView:
         self.mission_listbox = None
         self.selected_hero_panel = None
         self.selected_mission_panel = None
+        self.player_panel = None
 
         self.frame = Tk.Frame(master)
         self.frame.pack()
@@ -33,9 +34,9 @@ class MainView:
         middle_right.pack(side=Tk.RIGHT)
         self.make_selected_mission_panel(middle_right)
 
-        # bottom_frame = Tk.Frame(width=self.width / 3)
-        # bottom_frame.pack(side=Tk.BOTTOM, expand=True)
-        # self.make_player_interaction_panel(bottom_frame)
+        bottom_frame = Tk.Frame(width=self.width / 3)
+        bottom_frame.pack(side=Tk.BOTTOM, expand=True)
+        self.make_player_interaction_panel(bottom_frame)
 
     # builds the hero panel
     def make_hero_list_panel(self, parent_frame):
@@ -80,4 +81,5 @@ class MainView:
         self.selected_mission_panel = SelectedMissionPanel(parent_frame)
 
     # builds the player interaction panel
-    # def make_player_interaction_panel(self, parent_frame):
+    def make_player_interaction_panel(self, parent_frame):
+        self.player_panel = PlayerPanel(parent_frame)

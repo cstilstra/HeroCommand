@@ -1,48 +1,26 @@
-from Tkinter import *
-
-player_purse_label = None
-player_purse_count_label = None
-mission_outcome_label = None
-game_session = None
+import Tkinter as Tk
 
 
-def init(parent_frame, session):
-    global game_session
-    game_session = session
+class PlayerPanel:
 
-    frame = Frame(parent_frame)
-    frame.pack()
+    def __init__(self, parent_frame):
+        self.frame = Tk.Frame(parent_frame)
+        self.frame.pack()
 
-    # player_purse_label
-    label = Label(frame, text="Player Purse: ")
-    label.pack()
-    global player_purse_label
-    player_purse_label = label
+        self.player_purse_label = Tk.Label(self.frame, text="Player Purse: ")
+        self.player_purse_label.pack()
 
-    # player_purse_count_label
-    amount = game_session.get_player_purse()
-    label = Label(frame, text=amount)
-    label.pack()
-    global player_purse_count_label
-    player_purse_count_label = label
+        self.player_purse_count_label = Tk.Label(self.frame)
+        self.player_purse_count_label.pack()
 
-    # go button
-    hire_button = Button(frame)
-    hire_button["text"] = "Conduct Mission"
-    hire_button["command"] = go_button_click
-    hire_button.pack()
+        self.hire_button = Tk.Button(self.frame, text="Conduct Mission")
+        self.hire_button.pack()
 
-    # mission_outcome_label
-    label = Label(frame)
-    label.pack()
-    global mission_outcome_label
-    mission_outcome_label = label
+        self.mission_outcome_label = Tk.Label(self.frame)
+        self.mission_outcome_label.pack()
 
+    def update_player_purse_count(self, count):
+        self.player_purse_count_label["text"] = str(count)
 
-# passes the go button click on to the session
-# updates player_purse_count_label
-# updates mission_outcome_label
-def go_button_click():
-    game_session.run_mission_click()
-    player_purse_count_label["text"] = game_session.get_player_purse()
-    mission_outcome_label["text"] = game_session.get_last_outcome()
+    def update_mission_outcome(self, outcome):
+        self.mission_outcome_label["text"] = str(outcome)

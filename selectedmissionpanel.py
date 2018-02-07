@@ -1,49 +1,34 @@
-from Tkinter import *
-
-mission_name_label = None
-mission_difficulty_label = None
-mission_cost_label = None
-mission_reward_label = None
-mission_description_label = None
+import Tkinter as Tk
 
 
-def init(parent_frame):
-    frame = Frame(parent_frame)
-    frame.pack(side=LEFT)
+class SelectedMissionPanel:
 
-    label = Label(frame, text="Selected Mission")
-    label.pack(anchor=W)
+    def __init__(self, parent_frame):
+        self.frame = Tk.Frame(parent_frame)
+        self.frame.pack(side=Tk.LEFT)
 
-    name_label = Label(frame)
-    name_label.pack(anchor=W)
-    global mission_name_label
-    mission_name_label = name_label
+        self.label = Tk.Label(self.frame, text="Selected Mission")
+        self.label.pack(anchor=Tk.W)
 
-    difficulty_label = Label(frame)
-    difficulty_label.pack(anchor=W)
-    global mission_difficulty_label
-    mission_difficulty_label = difficulty_label
+        self.mission_name_label = Tk.Label(self.frame)
+        self.mission_name_label.pack(anchor=Tk.W)
 
-    cost_label = Label(frame)
-    cost_label.pack(anchor=W)
-    global mission_cost_label
-    mission_cost_label = cost_label
+        self.mission_difficulty_label = Tk.Label(self.frame)
+        self.mission_difficulty_label.pack(anchor=Tk.W)
 
-    reward_label = Label(frame)
-    reward_label.pack(anchor=W)
-    global mission_reward_label
-    mission_reward_label = reward_label
+        self.mission_cost_label = Tk.Label(self.frame)
+        self.mission_cost_label.pack(anchor=Tk.W)
 
-    description_label = Label(frame)
-    description_label.pack(anchor=W)
-    global mission_description_label
-    mission_description_label = description_label
+        self.mission_reward_label = Tk.Label(self.frame)
+        self.mission_reward_label.pack(anchor=Tk.W)
 
+        self.mission_description_label = Tk.Label(self.frame)
+        self.mission_description_label.pack(anchor=Tk.W)
 
-# updates all selected mission labels
-def update_selected_mission(selected_mission):
-    mission_name_label['text'] = "Name: " + selected_mission['name']
-    mission_difficulty_label['text'] = "Difficulty Level: " + selected_mission['difficulty']
-    mission_cost_label['text'] = "Cost: " + selected_mission['cost']
-    mission_reward_label['text'] = "Reward: " + selected_mission['reward']
-    mission_description_label['text'] = "Description: " + selected_mission['description']
+    # updates all selected mission labels
+    def update_selected_mission(self, selected_mission):
+        self.mission_name_label['text'] = "Name: " + selected_mission['name']
+        self.mission_difficulty_label['text'] = "Difficulty Level: " + selected_mission['difficulty']
+        self.mission_cost_label['text'] = "Cost: " + selected_mission['cost']
+        self.mission_reward_label['text'] = "Reward: " + selected_mission['reward']
+        self.mission_description_label['text'] = "Description: " + selected_mission['description']

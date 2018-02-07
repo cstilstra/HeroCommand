@@ -18,7 +18,6 @@ class MainView:
         self.frame.pack()
         self.create_widgets()
 
-    # builds all of the panels
     def create_widgets(self):
 
         top_frame = Tk.Frame()
@@ -38,7 +37,6 @@ class MainView:
         bottom_frame.pack(side=Tk.BOTTOM, expand=True)
         self.make_player_interaction_panel(bottom_frame)
 
-    # builds the hero panel
     def make_hero_list_panel(self, parent_frame):
         left_frame = Tk.Frame(parent_frame)
         left_frame.pack(side=Tk.LEFT)
@@ -47,15 +45,12 @@ class MainView:
         hero_list_label.pack()
         self.hero_listbox = Tk.Listbox(left_frame, width=self.width / 2)
 
-    # fills the listbox with the heroes from the session
     def fill_hero_list(self, heroes):
         for hero in heroes:
-            print hero
             hero_name = hero["name"]
             self.hero_listbox.insert(Tk.END, hero_name)
         self.hero_listbox.pack()
 
-    # builds the mission panel
     def make_mission_list_panel(self, parent_frame):
         right_frame = Tk.Frame(parent_frame)
         right_frame.pack(side=Tk.RIGHT)
@@ -64,22 +59,17 @@ class MainView:
         mission_list_label.pack()
         self.mission_listbox = Tk.Listbox(right_frame, width=self.width / 2)
 
-    # fills the listbox with the missions from the session
     def fill_mission_list(self, missions):
         for mission in missions:
-            print mission
             mission_name = mission["name"]
             self.mission_listbox.insert(Tk.END, mission_name)
         self.mission_listbox.pack()
 
-    # builds the selected hero panel
     def make_selected_hero_panel(self, parent_frame):
         self.selected_hero_panel = SelectedHeroPanel(parent_frame)
 
-    # builds the selected mission panel
     def make_selected_mission_panel(self, parent_frame):
         self.selected_mission_panel = SelectedMissionPanel(parent_frame)
 
-    # builds the player interaction panel
     def make_player_interaction_panel(self, parent_frame):
         self.player_panel = PlayerPanel(parent_frame)

@@ -3,13 +3,12 @@
 
 import heroes
 import missions
-import random
 
 
 class GameSession:
 
     def __init__(self):
-        self.player_purse = 44
+        self.player_purse = 44  # TODO: no more magic number
         self.last_outcome = ""
         self.hired_hero = []
         self.selected_hero = []

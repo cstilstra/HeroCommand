@@ -26,14 +26,14 @@ class Controller:
         if self.session.get_hired_hero() == []:
             w = event.widget
             try:
-                # get the value at the current selection
+                # get the value (name) at the current selection
                 index = int(w.curselection()[0])
                 name = w.get(index)
-                # identify which hero has been clicked on
+                # identify by name which hero has been clicked on
                 for hero in self.session.hero_master_list:
                     if hero["name"] == name:
-                        self.view.selected_hero_panel.update_selected_hero(hero)
                         self.session.set_selected_hero(hero)
+                        self.view.selected_hero_panel.update_selected_hero(hero)
             except IndexError:
                 pass
 
@@ -62,7 +62,6 @@ class Controller:
                 if self.hire_hero():
                     self.run_mission()
 
-    # TODO: Reduce calls to self.session.get_whatever
     def hire_hero(self):
         hero_cost = int(self.session.get_selected_hero()['cost'])
         if (self.session.get_player_purse() - hero_cost) >= 0:
@@ -76,14 +75,15 @@ class Controller:
             return False
 
     def run_mission(self):
-        mission_cost = int(self.session.get_selected_mission()['cost'])
+        mission = self.session.get_selected_mission()
+        mission_cost = int(mission['cost'])
         if (self.session.get_player_purse() - mission_cost) >= 0:
             self.session.adjust_player_purse(int(mission_cost) * -1)
             self.view.player_panel.update_player_purse_count(self.session.get_player_purse())
-            print self.session.get_hired_hero()['name'] + " went on " + self.session.get_selected_mission()['name']
             outcome = self.mission_success()
+            self.session.set_hired_hero([])
             if outcome is True:
-                mission_reward = self.session.get_selected_mission()['reward']
+                mission_reward = mission['reward']
                 self.session.adjust_player_purse(int(mission_reward))
                 self.view.player_panel.update_player_purse_count(self.session.get_player_purse())
                 self.session.set_last_outcome("Success, " + mission_reward + " currency reward!")
@@ -98,9 +98,12 @@ class Controller:
 
     def mission_success(self):
         hero_skill = int(self.session.get_hired_hero()['skill'])
-        hero_roll = random.randint(1, 100) + hero_skill
-        mission_difficulty = self.session.get_selected_mission()['difficulty']
-        if hero_roll > int(mission_difficulty):
-            return True
+        if hero_skill > 0:
+            hero_roll = random.randint(1, 100) + hero_skill
+            mission_difficulty = self.session.get_selected_mission()['difficulty']
+            if hero_roll > int(mission_difficulty):
+                return True
+            else:
+                return False
         else:
             return False

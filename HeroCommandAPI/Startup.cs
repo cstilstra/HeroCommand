@@ -20,8 +20,13 @@ namespace HeroCommandAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Adds an in memory db (NEEDS Nuget: Microsoft.EntityFrameworkCore.InMemory
+            //services.AddDbContext<HeroContext>(opt =>
+            //    opt.UseInMemoryDatabase("HeroList"));
+
+            string connectionString = Configuration.GetConnectionString("DefaultConnectionString");
             services.AddDbContext<HeroContext>(opt =>
-                opt.UseInMemoryDatabase("HeroList"));
+                opt.UseMySql(connectionString));
             services.AddControllers();
         }
 

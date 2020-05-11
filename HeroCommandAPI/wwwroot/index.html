@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>HC Admin</title>
+    <link rel="stylesheet" href="css/site.css" />
+</head>
+<body>
+    <h1>Hero Command Admin Panel</h1>
+    <!-- Heroes -->
+    <div  class="panel">
+        <h3>Add Hero</h3>
+        <form action="javascript:void(0);" method="POST" onsubmit="addHero()">
+            <label>Name</label>
+            <input type="text" id="add-hero-name" placeholder="Hero Name"><br />
+            <label>Skill</label>
+            <input type="text" id="add-hero-skill" placeholder="0"><br />
+            <label>Cost</label>
+            <input type="text" id="add-hero-hireCost" placeholder="0"><br />
+            <input type="submit" value="Add">
+        </form>
+
+        <div id="editHeroForm" style="display:none">
+            <h3>Edit</h3>
+            <form action="javascript:void(0);" onsubmit="updateHero()">
+                <input type="hidden" id="edit-hero-id">
+                <label>Name</label>
+                <input type="text" id="edit-hero-name"><br />
+                <label>Skill</label>
+                <input type="text" id="edit-hero-skill" /><br />
+                <label>Cost</label>
+                <input type="text" id="edit-hero-hireCost" /><br />
+                <input type="submit" value="Save">
+                <a onclick="closeHeroInput()" aria-label="Close">&#10006;</a>
+            </form>
+        </div>
+
+        <p id="heroCounter"></p>
+
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Skill</th>
+                <th>Cost</th>
+                <th></th>
+                <th></th>
+            </tr>
+            <tbody id="heroes"></tbody>
+        </table>
+    </div>
+    <!-- end Heroes -->
+
+    <!-- Missions -->
+    <div class="panel">
+        <h3>Add Mission</h3>
+        <form action="javascript:void(0);" method="POST" onsubmit="addMission()">
+            <label>Name</label>
+            <input type="text" id="add-mission-name" placeholder="Mission Name"><br />
+            <label>Skill</label>
+            <input type="text" id="add-mission-skill" placeholder="0"><br />
+            <label>Reward</label>
+            <input type="text" id="add-mission-reward" placeholder="0"><br />
+            <input type="submit" value="Add">
+        </form>
+
+        <div id="editMissionForm" style="display:none">
+            <h3>Edit</h3>
+            <form action="javascript:void(0);" onsubmit="updateMission()">
+                <input type="hidden" id="edit-mission-id">
+                <label>Name</label>
+                <input type="text" id="edit-mission-name"><br />
+                <label>Skill</label>
+                <input type="text" id="edit-mission-skill" /><br />
+                <label>Reward</label>
+                <input type="text" id="edit-mission-reward" /><br />
+                <input type="submit" value="Save">
+                <a onclick="closeMissionInput()" aria-label="Close">&#10006;</a>
+            </form>
+        </div>
+
+        <p id="missionCounter"></p>
+
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Skill Requirement</th>
+                <th>Reward</th>
+                <th></th>
+                <th></th>
+            </tr>
+            <tbody id="missions"></tbody>
+        </table>
+    </div>
+    <!-- end Heroes -->
+
+    <script src="js/site.js" asp-append-version="true"></script>
+    <script type="text/javascript">
+        getHeroes();
+        getMissions();
+    </script>
+</body>
+</html>

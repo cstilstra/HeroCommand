@@ -9,48 +9,48 @@ namespace HeroCommandAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class HeroesController : ControllerBase
+    public class MissionsController : ControllerBase
     {
-        private readonly HeroContext _context;
+        private readonly MissionContext _context;
 
-        public HeroesController(HeroContext context)
+        public MissionsController(MissionContext context)
         {
             _context = context;
         }
 
-        // GET: api/Heroes
+        // GET: api/Missions
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Hero>>> GetHeroes()
+        public async Task<ActionResult<IEnumerable<Mission>>> GetMissions()
         {
-            return await _context.Heroes.ToListAsync();
+            return await _context.Missions.ToListAsync();
         }
 
-        // GET: api/Heroes/5
+        // GET: api/Missions/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Hero>> GetHero(long id)
+        public async Task<ActionResult<Mission>> GetMission(long id)
         {
-            var hero = await _context.Heroes.FindAsync(id);
+            var mission = await _context.Missions.FindAsync(id);
 
-            if (hero == null)
+            if (mission == null)
             {
                 return NotFound();
             }
 
-            return hero;
+            return mission;
         }
 
-        // PUT: api/Heroes/5
+        // PUT: api/Missions/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutHero(long id, Hero hero)
+        public async Task<IActionResult> PutMission(long id, Mission mission)
         {
-            if (id != hero.Id)
+            if (id != mission.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(hero).State = EntityState.Modified;
+            _context.Entry(mission).State = EntityState.Modified;
 
             try
             {
@@ -58,7 +58,7 @@ namespace HeroCommandAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!HeroExists(id))
+                if (!MissionExists(id))
                 {
                     return NotFound();
                 }
@@ -71,37 +71,37 @@ namespace HeroCommandAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Heroes
+        // POST: api/Missions
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Hero>> PostHero(Hero hero)
+        public async Task<ActionResult<Mission>> PostMission(Mission mission)
         {
-            _context.Heroes.Add(hero);
+            _context.Missions.Add(mission);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetHero), new { id = hero.Id }, hero);
+            return CreatedAtAction(nameof(GetMission), new { id = mission.Id }, mission);
         }
 
-        // DELETE: api/Heroes/5
+        // DELETE: api/Missions/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Hero>> DeleteHero(long id)
+        public async Task<ActionResult<Mission>> DeleteMission(long id)
         {
-            var hero = await _context.Heroes.FindAsync(id);
-            if (hero == null)
+            var mission = await _context.Missions.FindAsync(id);
+            if (mission == null)
             {
                 return NotFound();
             }
 
-            _context.Heroes.Remove(hero);
+            _context.Missions.Remove(mission);
             await _context.SaveChangesAsync();
 
-            return hero;
+            return mission;
         }
 
-        private bool HeroExists(long id)
+        private bool MissionExists(long id)
         {
-            return _context.Heroes.Any(e => e.Id == id);
+            return _context.Missions.Any(e => e.Id == id);
         }
     }
 }

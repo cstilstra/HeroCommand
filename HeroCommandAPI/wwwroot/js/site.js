@@ -1,8 +1,8 @@
-﻿const uri = 'api/Heroes';
+﻿const heroUri = 'api/Heroes';
 let todos = [];
 
 function getHeroes() {
-    fetch(uri)
+    fetch(heroUri)
         .then(response => response.json())
         .then(data => _displayHeroes(data))
         .catch(error => console.error('Unable to get items.', error));
@@ -17,7 +17,7 @@ function addHero() {
         hireCost: parseInt(addHireCostTextbox.value.trim(), 10)
     };
 
-    fetch(uri, {
+    fetch(heroUri, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -35,7 +35,7 @@ function addHero() {
 }
 
 function deleteHero(id) {
-    fetch(`${uri}/${id}`, {
+    fetch(`${heroUri}/${id}`, {
         method: 'DELETE'
     })
         .then(() => getItems())
@@ -59,7 +59,7 @@ function updateHero() {
         hireCost: parseInt(document.getElementById('edit-hireCost').value.trim(), 10)
     };
 
-    fetch(`${uri}/${itemId}`, {
+    fetch(`${heroUri}/${itemId}`, {
         method: 'PUT',
         headers: {
             'Accept': 'application/json',

@@ -7,30 +7,39 @@
 </head>
 <body>
     <h1>Hero CRUD</h1>
-    <h3>Add</h3>
+    <h3>Add Hero</h3>
     <form action="javascript:void(0);" method="POST" onsubmit="addHero()">
-        <input type="text" id="add-name" placeholder="New to-do">
-        <input type="text" id="add-hireCost" placeholder="0" >
+        <label>Name</label>
+        <input type="text" id="add-name" placeholder="Hero Name"><br />
+        <label>Skill</label>
+        <input type="text" id="add-skill" placeholder="0"><br />
+        <label>Cost</label>
+        <input type="text" id="add-hireCost" placeholder="0"><br />
         <input type="submit" value="Add">
     </form>
 
-    <div id="editForm" style="display:none">
+    <div id="editHeroForm" style="display:none">
         <h3>Edit</h3>
         <form action="javascript:void(0);" onsubmit="updateHero()">
             <input type="hidden" id="edit-id">
-            <input type="text" id="edit-name">
-            <input type="text" id="edit-hireCost" />
+            <label>Name</label>
+            <input type="text" id="edit-name"><br />
+            <label>Skill</label>
+            <input type="text" id="edit-skill" /><br />
+            <label>Cost</label>
+            <input type="text" id="edit-hireCost" /><br />
             <input type="submit" value="Save">
-            <a onclick="closeInput()" aria-label="Close">&#10006;</a>
+            <a onclick="closeHeroInput()" aria-label="Close">&#10006;</a>
         </form>
     </div>
 
-    <p id="counter"></p>
+    <p id="heroCounter"></p>
 
     <table>
         <tr>
             <th>Name</th>
-            <th>Hire Cost</th>
+            <th>Skill</th>
+            <th>Cost</th>
             <th></th>
             <th></th>
         </tr>

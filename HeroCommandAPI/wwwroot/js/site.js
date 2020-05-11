@@ -1,5 +1,7 @@
 ﻿const heroUri = 'api/Heroes';
-let todos = [];
+const missionUri = 'api/Missions';
+let heroes = [];
+let missions = [];
 
 function getHeroes() {
     fetch(heroUri)
@@ -42,13 +44,14 @@ function deleteHero(id) {
         .catch(error => console.error('Unable to delete item.', error));
 }
 
-function displayEditForm(id) {
-    const item = todos.find(item => item.id === id);
+function displayHeroEditForm(id) {
+    const item = heroes.find(item => item.id === id);
 
     document.getElementById('edit-name').value = item.name;
     document.getElementById('edit-id').value = item.id;
+    document.getElementById('edit-skill').value = item.skill;
     document.getElementById('edit-hireCost').value = item.hireCost;
-    document.getElementById('editForm').style.display = 'block';
+    document.getElementById('editHeroForm').style.display = 'block';
 }
 
 function updateHero() {
@@ -56,6 +59,7 @@ function updateHero() {
     const item = {
         id: parseInt(itemId, 10),
         name: document.getElementById('edit-name').value.trim(),
+        skill: parseInt(document.getElementById('edit-skill').value.trim(), 10),
         hireCost: parseInt(document.getElementById('edit-hireCost').value.trim(), 10)
     };
 
@@ -71,26 +75,26 @@ function updateHero() {
         .catch(error => console.error('Unable to update item.', error));
 
     getHeroes();
-    closeInput();
+    closeHeroInput();
 
     return false;
 }
 
-function closeInput() {
-    document.getElementById('editForm').style.display = 'none';
+function closeHeroInput() {
+    document.getElementById('editHeroForm').style.display = 'none';
 }
 
-function _displayCount(itemCount) {
+function _displayHeroCount(itemCount) {
     const name = (itemCount === 1) ? 'hero' : 'heroes';
 
-    document.getElementById('counter').innerText = `${itemCount} ${name}`;
+    document.getElementById('heroCounter').innerText = `${itemCount} ${name}`;
 }
 
 function _displayHeroes(data) {
     const tBody = document.getElementById('heroes');
     tBody.innerHTML = '';
 
-    _displayCount(data.length);
+    _displayHeroCount(data.length);
 
     const button = document.createElement('button');
 
@@ -98,7 +102,7 @@ function _displayHeroes(data) {
 
         let editButton = button.cloneNode(false);
         editButton.innerText = 'Edit';
-        editButton.setAttribute('onclick', `displayEditForm(${item.id})`);
+        editButton.setAttribute('onclick', `displayHeroEditForm(${item.id})`);
 
         let deleteButton = button.cloneNode(false);
         deleteButton.innerText = 'Delete';
@@ -111,15 +115,19 @@ function _displayHeroes(data) {
         td1.appendChild(textNode);
 
         let td2 = tr.insertCell(1);
-        let hireCostTextNode = document.createTextNode(item.hireCost);
-        td2.appendChild(hireCostTextNode);
+        let skillNode = document.createTextNode(item.skill);
+        td2.appendChild(skillNode);
 
         let td3 = tr.insertCell(2);
-        td3.appendChild(editButton);
+        let hireCostTextNode = document.createTextNode(item.hireCost);
+        td3.appendChild(hireCostTextNode);
 
         let td4 = tr.insertCell(3);
-        td4.appendChild(deleteButton);
+        td4.appendChild(editButton);
+
+        let td5 = tr.insertCell(4);
+        td5.appendChild(deleteButton);
     });
 
-    todos = data;
+    heroes = data;
 }

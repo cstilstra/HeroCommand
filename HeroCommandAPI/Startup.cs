@@ -22,9 +22,7 @@ namespace HeroCommandAPI
         {
             string connectionString = Configuration.GetConnectionString("DefaultConnectionString");
 
-            services.AddDbContext<HeroContext>(opt =>
-                opt.UseMySql(connectionString));
-            services.AddDbContext<MissionContext>(opt =>
+            services.AddDbContext<HeroCommandContext>(opt =>
                 opt.UseMySql(connectionString));
 
             services.AddControllers();

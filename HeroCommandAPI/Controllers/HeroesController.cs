@@ -11,9 +11,9 @@ namespace HeroCommandAPI.Controllers
     [ApiController]
     public class HeroesController : ControllerBase
     {
-        private readonly HeroContext _context;
+        private readonly HeroCommandContext _context;
 
-        public HeroesController(HeroContext context)
+        public HeroesController(HeroCommandContext context)
         {
             _context = context;
         }

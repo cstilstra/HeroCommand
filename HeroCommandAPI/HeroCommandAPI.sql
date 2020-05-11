@@ -13,7 +13,7 @@ CREATE TABLE `missions` (
 );
 
 CREATE TABLE `heroes_to_missions` (
-  `HeroId` int,
+  `HeroId` int PRIMARY KEY,
   `MissionId` int
 );
 

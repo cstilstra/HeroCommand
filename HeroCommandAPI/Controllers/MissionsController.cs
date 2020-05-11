@@ -27,7 +27,7 @@ namespace HeroCommandAPI.Controllers
 
         // GET: api/Missions/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Mission>> GetMission(long id)
+        public async Task<ActionResult<Mission>> GetMission(int id)
         {
             var mission = await _context.Missions.FindAsync(id);
 
@@ -43,7 +43,7 @@ namespace HeroCommandAPI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMission(long id, Mission mission)
+        public async Task<IActionResult> PutMission(int id, Mission mission)
         {
             if (id != mission.Id)
             {
@@ -85,7 +85,7 @@ namespace HeroCommandAPI.Controllers
 
         // DELETE: api/Missions/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Mission>> DeleteMission(long id)
+        public async Task<ActionResult<Mission>> DeleteMission(int id)
         {
             var mission = await _context.Missions.FindAsync(id);
             if (mission == null)
@@ -99,7 +99,7 @@ namespace HeroCommandAPI.Controllers
             return mission;
         }
 
-        private bool MissionExists(long id)
+        private bool MissionExists(int id)
         {
             return _context.Missions.Any(e => e.Id == id);
         }

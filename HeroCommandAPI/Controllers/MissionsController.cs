@@ -1,6 +1,8 @@
 ﻿using HeroCommandAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -85,25 +87,39 @@ namespace HeroCommandAPI.Controllers
 
         //POST: api/Missions/StartMission/1
         [HttpPost("StartMission/{id}")]
-        public async Task<ActionResult<IEnumerable<HeroToMission>>> PostHeroToMission(int id, int[] heroIds)
+        public async Task<ActionResult<string>> PostHeroToMission(int id, int[] heroIds)
         {
-            List<HeroToMission> newOnes = new List<HeroToMission>();
+            List<Hero> heroes = await getHeroesByIds(heroIds);
+            Mission mission = await _context.Missions.FindAsync(id);
 
-            foreach(int heroId in heroIds)
+            int skillSum = 0;
+
+            foreach(Hero hero in heroes)
             {
+                skillSum += hero.Skill;
 
-                var htm = new HeroToMission
+                var link = new HeroToMission
                 {
-                    HeroId = heroId,
+                    HeroId = hero.Id,
                     MissionId = id
                 };
 
-                _context.Heroes_to_missions.Add(htm);
-                newOnes.Add(htm);
+                _context.Heroes_to_missions.Add(link);
             }
-            
-            await _context.SaveChangesAsync();
-            return newOnes;
+
+            string result = "";
+            if (skillSum >= mission.SkillCost)
+            {
+                await _context.SaveChangesAsync();
+                result = "Success";
+            }
+            else
+            {
+                _context.RejectChanges();
+                result = "Heroes need more skill";
+            }
+
+            return result;
         }
 
         // DELETE: api/Missions/5
@@ -125,6 +141,18 @@ namespace HeroCommandAPI.Controllers
         private bool MissionExists(int id)
         {
             return _context.Missions.Any(e => e.Id == id);
+        }
+
+        private async Task<List<Hero>> getHeroesByIds(int[] heroIds)
+        {
+            List<Hero> heroes = new List<Hero>();
+            foreach(int id in heroIds)
+            {
+                var hero = await _context.Heroes.FindAsync(id);
+                if (hero != null) heroes.Add(hero);
+            }
+
+            return heroes;
         }
     }
 }

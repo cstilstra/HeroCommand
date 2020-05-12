@@ -83,6 +83,29 @@ namespace HeroCommandAPI.Controllers
             return CreatedAtAction(nameof(GetMission), new { id = mission.Id }, mission);
         }
 
+        //POST: api/Missions/StartMission/1
+        [HttpPost("StartMission/{id}")]
+        public async Task<ActionResult<IEnumerable<HeroToMission>>> PostHeroToMission(int id, int[] heroIds)
+        {
+            List<HeroToMission> newOnes = new List<HeroToMission>();
+
+            foreach(int heroId in heroIds)
+            {
+
+                var htm = new HeroToMission
+                {
+                    HeroId = heroId,
+                    MissionId = id
+                };
+
+                _context.Heroes_to_missions.Add(htm);
+                newOnes.Add(htm);
+            }
+            
+            await _context.SaveChangesAsync();
+            return newOnes;
+        }
+
         // DELETE: api/Missions/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Mission>> DeleteMission(int id)

@@ -39,9 +39,9 @@ namespace HeroCommandAPI.Controllers
             return hero;
         }
 
-        // GET: api/Heroes/ByMission/1
-        [HttpGet("ByMission/{id}")]
-        public async Task<ActionResult<IEnumerable<Hero>>> GetHeroesByMission(int id)
+        // GET: api/Heroes/OnMission/1
+        [HttpGet("OnMission/{id}")]
+        public async Task<ActionResult<IEnumerable<Hero>>> GetHeroesOnMission(int id)
         {
             List<HeroToMission> heroesToMission = await _context.Heroes_to_missions.Where(entry => entry.MissionId == id).ToListAsync();
 

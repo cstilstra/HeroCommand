@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -87,29 +86,15 @@ namespace HeroCommandAPI.Controllers
 
         //POST: api/Missions/StartMission/1
         [HttpPost("StartMission/{id}")]
-        public async Task<ActionResult<string>> PostHeroToMission(int id, int[] heroIds)
+        public async Task<ActionResult<string>> PostHeroesToMission(int id, int[] heroIds)
         {
-            List<Hero> heroes = await getHeroesByIds(heroIds);
+            List<Hero> heroes = await GetHeroesByIds(heroIds);
             Mission mission = await _context.Missions.FindAsync(id);
+            string result;
 
-            int skillSum = 0;
-
-            foreach(Hero hero in heroes)
+            if (HeroesSkilledEnoughForMission(heroes, mission))
             {
-                skillSum += hero.Skill;
-
-                var link = new HeroToMission
-                {
-                    HeroId = hero.Id,
-                    MissionId = id
-                };
-
-                _context.Heroes_to_missions.Add(link);
-            }
-
-            string result = "";
-            if (skillSum >= mission.SkillCost)
-            {
+                SendHeroesOnMission(heroes, mission);
                 await _context.SaveChangesAsync();
                 result = "Success";
             }
@@ -143,7 +128,7 @@ namespace HeroCommandAPI.Controllers
             return _context.Missions.Any(e => e.Id == id);
         }
 
-        private async Task<List<Hero>> getHeroesByIds(int[] heroIds)
+        private async Task<List<Hero>> GetHeroesByIds(int[] heroIds)
         {
             List<Hero> heroes = new List<Hero>();
             foreach(int id in heroIds)
@@ -153,6 +138,33 @@ namespace HeroCommandAPI.Controllers
             }
 
             return heroes;
+        }
+
+        private bool HeroesSkilledEnoughForMission(List<Hero> heroes, Mission mission)
+        {
+            int skillSum = 0;
+
+            foreach (Hero hero in heroes)
+            {
+                skillSum += hero.Skill;
+            }
+
+            if (skillSum >= mission.SkillCost) return true;
+            else return false;
+        }
+
+        private void SendHeroesOnMission(List<Hero> heroes, Mission mission)
+        {
+            foreach (Hero hero in heroes)
+            {
+                var link = new HeroToMission
+                {
+                    HeroId = hero.Id,
+                    MissionId = mission.Id
+                };
+
+                _context.Heroes_to_missions.Add(link);
+            }
         }
     }
 }

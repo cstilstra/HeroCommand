@@ -9,12 +9,14 @@ CREATE TABLE `missions` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `Name` varchar(255),
   `SkillCost` int,
-  `Reward` int
+  `Reward` int,
+  `DurationMs` int
 );
 
 CREATE TABLE `heroes_to_missions` (
   `HeroId` int PRIMARY KEY,
-  `MissionId` int
+  `MissionId` int,
+  `FinishesAt` timestamp
 );
 
 ALTER TABLE `heroes_to_missions` ADD FOREIGN KEY (`HeroId`) REFERENCES `heroes` (`id`);

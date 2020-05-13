@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -90,22 +91,51 @@ namespace HeroCommandAPI.Controllers
         {
             List<Hero> heroes = await GetHeroesByIds(heroIds);
             Mission mission = await _context.Missions.FindAsync(id);
-            string result;
 
             if (HeroesSkilledEnoughForMission(heroes, mission))
             {
                 SendHeroesOnMission(heroes, mission);
-                BoostHeroes(heroes);
                 await _context.SaveChangesAsync();
-                result = "Success";
+                return "Success";
             }
             else
             {
                 _context.RejectChanges();
-                result = "Heroes need more skill";
+                return "Heroes need more skill";
             }
+        }
 
-            return result;
+        // DELETE: api/Missions/TryEndMission/1
+        [HttpDelete("TryEndMission/{id}")]
+        public async Task<ActionResult<string>> TryEndMission(int id)
+        {
+            List<HeroToMission> heroesToMissions = await _context.Heroes_to_missions.Where(entry => entry.MissionId == id).ToListAsync();
+            if (heroesToMissions.Count == 0) return "Mission not underway.";
+            DateTime finishedAt = heroesToMissions.FirstOrDefault().FinishesAt;
+
+            if(DateTime.Now > finishedAt)
+            {
+                Mission mission = await _context.Missions.FindAsync(id);
+                List<Hero> heroes = new List<Hero>();
+                foreach(HeroToMission htm in heroesToMissions)
+                {
+                    Hero hero = await _context.Heroes.FindAsync(htm.HeroId);
+                    if(hero != null)
+                    {
+                        heroes.Add(hero);
+                    }
+                }
+
+                BoostHeroes(heroes);
+                _context.Heroes_to_missions.RemoveRange(heroesToMissions);
+                await _context.SaveChangesAsync();
+
+                return "Mission complete";
+            }
+            else
+            {
+                return "Mission not yet completed";
+            }
         }
 
         // DELETE: api/Missions/5
@@ -156,12 +186,14 @@ namespace HeroCommandAPI.Controllers
 
         private void SendHeroesOnMission(List<Hero> heroes, Mission mission)
         {
+            DateTime doneAt = DateTime.Now.AddMilliseconds(mission.DurationMs);
             foreach (Hero hero in heroes)
             {
                 var link = new HeroToMission
                 {
                     HeroId = hero.Id,
-                    MissionId = mission.Id
+                    MissionId = mission.Id,
+                    FinishesAt = doneAt
                 };
 
                 _context.Heroes_to_missions.Add(link);

@@ -16,7 +16,7 @@
             <label>Skill</label>
             <input type="text" id="add-hero-skill" placeholder="0"><br />
             <label>Cost</label>
-            <input type="text" id="add-hero-hireCost" placeholder="0"><br />
+            <input type="text" id="add-hero-hireCost" placeholder="0"><br />            
             <input type="submit" value="Add">
         </form>
 
@@ -62,6 +62,8 @@
             <input type="text" id="add-mission-skill" placeholder="0"><br />
             <label>Reward</label>
             <input type="text" id="add-mission-reward" placeholder="0"><br />
+            <label>Duration(ms)</label>
+            <input type="text" id="add-mission-duration" placeholder="100"><br />
             <input type="submit" value="Add">
         </form>
 
@@ -76,6 +78,8 @@
                 <input type="text" id="edit-mission-skill" /><br />
                 <label>Reward</label>
                 <input type="text" id="edit-mission-reward" /><br />
+                <label>Duration(ms)</label>
+                <input type="text" id="edit-mission-duration" placeholder="100"><br />
                 <input type="submit" value="Save">
                 <a onclick="closeMissionInput()" aria-label="Close">&#10006;</a>
             </form>
@@ -89,6 +93,7 @@
                 <th>Name</th>
                 <th>Skill Requirement</th>
                 <th>Reward</th>
+                <th>Duration(ms)</th>
                 <th></th>
                 <th></th>
             </tr>

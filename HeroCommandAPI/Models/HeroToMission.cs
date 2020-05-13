@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Google.Protobuf.WellKnownTypes;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace HeroCommandAPI.Models
 {
@@ -7,5 +9,6 @@ namespace HeroCommandAPI.Models
         [Key]
         public int HeroId { get; set; }
         public int MissionId { get; set; }
+        public DateTime FinishesAt { get; set; }
     }
 }

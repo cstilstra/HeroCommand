@@ -153,11 +153,13 @@ function addMission() {
     const addMissionNameTextbox = document.getElementById('add-mission-name');
     const addMissionSkillCostTextbox = document.getElementById('add-mission-skill');
     const addMissionRewardTextbox = document.getElementById('add-mission-reward');
+    const addMissionDurationTextbox = document.getElementById('add-mission-duration');
 
     const mission = {
         name: addMissionNameTextbox.value.trim(),
         skillCost: parseInt(addMissionSkillCostTextbox.value.trim(), 10),
-        reward: parseInt(addMissionRewardTextbox.value.trim(), 10)
+        reward: parseInt(addMissionRewardTextbox.value.trim(), 10),
+        durationMs: parseInt(addMissionDurationTextbox.value.trim(), 10)
     };
 
     fetch(missionUri, {
@@ -174,6 +176,7 @@ function addMission() {
             addMissionNameTextbox.value = '';
             addMissionSkillCostTextbox.value = '';
             addMissionRewardTextbox.value = '';
+            addMissionDurationTextbox.value = '';
         })
         .catch(error => console.error('Unable to add item.', error));
 }
@@ -193,6 +196,7 @@ function displayMissionEditForm(id) {
     document.getElementById('edit-mission-id').value = item.id;
     document.getElementById('edit-mission-skill').value = item.skillCost;
     document.getElementById('edit-mission-reward').value = item.reward;
+    document.getElementById('edit-mission-duration').value = item.durationMs;
     document.getElementById('editMissionForm').style.display = 'block';
 }
 
@@ -202,7 +206,8 @@ function updateMission() {
         id: parseInt(itemId, 10),
         name: document.getElementById('edit-mission-name').value.trim(),
         skillCost: parseInt(document.getElementById('edit-mission-skill').value.trim(), 10),
-        reward: parseInt(document.getElementById('edit-mission-reward').value.trim(), 10)
+        reward: parseInt(document.getElementById('edit-mission-reward').value.trim(), 10),
+        durationMs: parseInt(document.getElementById('edit-mission-duration').value.trim(), 10)
     };
 
     fetch(`${missionUri}/${itemId}`, {
@@ -269,10 +274,14 @@ function _displayMissions(data) {
         td3.appendChild(hireCostTextNode);
 
         let td4 = tr.insertCell(4);
-        td4.appendChild(editButton);
+        let durationTextNode = document.createTextNode(item.durationMs);
+        td4.appendChild(durationTextNode);
 
         let td5 = tr.insertCell(5);
-        td5.appendChild(deleteButton);
+        td5.appendChild(editButton);
+
+        let td6 = tr.insertCell(6);
+        td6.appendChild(deleteButton);
     });
 
     missions = data;

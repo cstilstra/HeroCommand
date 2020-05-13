@@ -27,7 +27,7 @@ namespace HeroCommandAPI.Controllers
 
         // GET: api/Heroes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Hero>> GetHero(long id)
+        public async Task<ActionResult<Hero>> GetHero(int id)
         {
             var hero = await _context.Heroes.FindAsync(id);
 
@@ -39,11 +39,28 @@ namespace HeroCommandAPI.Controllers
             return hero;
         }
 
+        // GET: api/Heroes/OnMission/1
+        [HttpGet("OnMission/{id}")]
+        public async Task<ActionResult<IEnumerable<Hero>>> GetHeroesOnMission(int id)
+        {
+            List<HeroToMission> heroesToMission = await _context.Heroes_to_missions.Where(entry => entry.MissionId == id).ToListAsync();
+
+            List<Hero> heroes = new List<Hero>();
+
+            foreach (HeroToMission link in heroesToMission)
+            {
+                var hero = await _context.Heroes.FindAsync(link.HeroId);
+                if (hero != null) heroes.Add(hero);
+            }
+
+            return heroes;
+        }
+
         // PUT: api/Heroes/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutHero(long id, Hero hero)
+        public async Task<IActionResult> PutHero(int id, Hero hero)
         {
             if (id != hero.Id)
             {
@@ -85,7 +102,7 @@ namespace HeroCommandAPI.Controllers
 
         // DELETE: api/Heroes/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Hero>> DeleteHero(long id)
+        public async Task<ActionResult<Hero>> DeleteHero(int id)
         {
             var hero = await _context.Heroes.FindAsync(id);
             if (hero == null)
@@ -99,7 +116,7 @@ namespace HeroCommandAPI.Controllers
             return hero;
         }
 
-        private bool HeroExists(long id)
+        private bool HeroExists(int id)
         {
             return _context.Heroes.Any(e => e.Id == id);
         }

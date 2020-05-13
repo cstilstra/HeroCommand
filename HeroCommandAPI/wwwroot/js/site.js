@@ -152,7 +152,7 @@ function addMission() {
 
     const mission = {
         name: addMissionNameTextbox.value.trim(),
-        hireCost: parseInt(addMissionSkillCostTextbox.value.trim(), 10),
+        skillCost: parseInt(addMissionSkillCostTextbox.value.trim(), 10),
         reward: parseInt(addMissionRewardTextbox.value.trim(), 10)
     };
 
@@ -197,8 +197,8 @@ function updateMission() {
     const item = {
         id: parseInt(itemId, 10),
         name: document.getElementById('edit-mission-name').value.trim(),
-        skill: parseInt(document.getElementById('edit-mission-skill').value.trim(), 10),
-        hireCost: parseInt(document.getElementById('edit-mission-reward').value.trim(), 10)
+        skillCost: parseInt(document.getElementById('edit-mission-skill').value.trim(), 10),
+        reward: parseInt(document.getElementById('edit-mission-reward').value.trim(), 10)
     };
 
     fetch(`${missionUri}/${itemId}`, {

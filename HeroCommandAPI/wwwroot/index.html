@@ -23,7 +23,8 @@
         <div id="editHeroForm" style="display:none">
             <h3>Edit</h3>
             <form action="javascript:void(0);" onsubmit="updateHero()">
-                <input type="hidden" id="edit-hero-id">
+                <label>Id</label>
+                <input type="text" disabled="disabled" id="edit-hero-id"><br />
                 <label>Name</label>
                 <input type="text" id="edit-hero-name"><br />
                 <label>Skill</label>
@@ -39,6 +40,7 @@
 
         <table>
             <tr>
+                <th>Id</th>
                 <th>Name</th>
                 <th>Skill</th>
                 <th>Cost</th>
@@ -66,7 +68,8 @@
         <div id="editMissionForm" style="display:none">
             <h3>Edit</h3>
             <form action="javascript:void(0);" onsubmit="updateMission()">
-                <input type="hidden" id="edit-mission-id">
+                <label>Id</label>
+                <input type="text" disabled="disabled" id="edit-mission-id">
                 <label>Name</label>
                 <input type="text" id="edit-mission-name"><br />
                 <label>Skill</label>
@@ -82,6 +85,7 @@
 
         <table>
             <tr>
+                <th>Id</th>
                 <th>Name</th>
                 <th>Skill Requirement</th>
                 <th>Reward</th>

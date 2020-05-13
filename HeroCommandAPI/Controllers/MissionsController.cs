@@ -95,6 +95,7 @@ namespace HeroCommandAPI.Controllers
             if (HeroesSkilledEnoughForMission(heroes, mission))
             {
                 SendHeroesOnMission(heroes, mission);
+                BoostHeroes(heroes);
                 await _context.SaveChangesAsync();
                 result = "Success";
             }
@@ -164,6 +165,15 @@ namespace HeroCommandAPI.Controllers
                 };
 
                 _context.Heroes_to_missions.Add(link);
+            }
+        }
+
+        private void BoostHeroes(List<Hero> heroes)
+        {
+            foreach(Hero hero in heroes)
+            {
+                hero.Skill++;
+                _context.Heroes.Update(hero);
             }
         }
     }

@@ -111,22 +111,26 @@ function _displayHeroes(data) {
 
         let tr = tBody.insertRow();
 
-        let td1 = tr.insertCell(0);
+        let td0 = tr.insertCell(0);
+        let idNode = document.createTextNode(item.id);
+        td0.appendChild(idNode);
+
+        let td1 = tr.insertCell(1);
         let textNode = document.createTextNode(item.name);
         td1.appendChild(textNode);
 
-        let td2 = tr.insertCell(1);
+        let td2 = tr.insertCell(2);
         let skillNode = document.createTextNode(item.skill);
         td2.appendChild(skillNode);
 
-        let td3 = tr.insertCell(2);
+        let td3 = tr.insertCell(3);
         let hireCostTextNode = document.createTextNode(item.hireCost);
         td3.appendChild(hireCostTextNode);
 
-        let td4 = tr.insertCell(3);
+        let td4 = tr.insertCell(4);
         td4.appendChild(editButton);
 
-        let td5 = tr.insertCell(4);
+        let td5 = tr.insertCell(5);
         td5.appendChild(deleteButton);
     });
 
@@ -248,22 +252,26 @@ function _displayMissions(data) {
 
         let tr = tBody.insertRow();
 
-        let td1 = tr.insertCell(0);
+        let td0 = tr.insertCell(0);
+        let idNode = document.createTextNode(item.id);
+        td0.appendChild(idNode);
+
+        let td1 = tr.insertCell(1);
         let textNode = document.createTextNode(item.name);
         td1.appendChild(textNode);
 
-        let td2 = tr.insertCell(1);
+        let td2 = tr.insertCell(2);
         let skillNode = document.createTextNode(item.skillCost);
         td2.appendChild(skillNode);
 
-        let td3 = tr.insertCell(2);
+        let td3 = tr.insertCell(3);
         let hireCostTextNode = document.createTextNode(item.reward);
         td3.appendChild(hireCostTextNode);
 
-        let td4 = tr.insertCell(3);
+        let td4 = tr.insertCell(4);
         td4.appendChild(editButton);
 
-        let td5 = tr.insertCell(4);
+        let td5 = tr.insertCell(5);
         td5.appendChild(deleteButton);
     });
 

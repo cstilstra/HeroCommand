@@ -7,6 +7,7 @@ namespace HeroCommandAPI.Models
         public DbSet<Hero> Heroes { get; set; }
         public DbSet<Mission> Missions { get; set; }
         public DbSet<HeroToMission> Heroes_to_missions { get; set; }
+        public DbSet<Player> Players { get; set; }
 
         public HeroCommandContext(DbContextOptions<HeroCommandContext> options)
             : base(options) { }

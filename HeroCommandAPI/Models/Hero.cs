@@ -6,5 +6,6 @@
         public string Name { get; set; }
         public int HireCost { get; set; }
         public int Skill { get; set; }
+        public int PlayerLevelVisible { get; set; }
     }
 }

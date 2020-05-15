@@ -85,16 +85,16 @@ namespace HeroCommandAPI.Controllers
             return CreatedAtAction(nameof(GetMission), new { id = mission.Id }, mission);
         }
 
-        //POST: api/Missions/StartMission/1
+        //POST: api/Missions/StartMission/1?playerId=1
         [HttpPost("StartMission/{id}")]
-        public async Task<ActionResult<string>> PostHeroesToMission(int id, int[] heroIds)
+        public async Task<ActionResult<string>> PostHeroesToMission(int id, int playerId, int[] heroIds)
         {
             List<Hero> heroes = await GetHeroesByIds(heroIds);
             Mission mission = await _context.Missions.FindAsync(id);
 
             if (HeroesSkilledEnoughForMission(heroes, mission))
             {
-                SendHeroesOnMission(heroes, mission);
+                SendHeroesOnMission(heroes, mission, playerId);
                 await _context.SaveChangesAsync();
                 return "Success";
             }
@@ -105,15 +105,15 @@ namespace HeroCommandAPI.Controllers
             }
         }
 
-        // DELETE: api/Missions/TryEndMission/1
+        // DELETE: api/Missions/TryEndMission/1?playerId=1
         [HttpDelete("TryEndMission/{id}")]
-        public async Task<ActionResult<string>> TryEndMission(int id)
+        public async Task<ActionResult<string>> TryEndMission(int id, int playerId)
         {
-            List<HeroToMission> heroesToMissions = await _context.Heroes_to_missions.Where(entry => entry.MissionId == id).ToListAsync();
+            List<HeroToMission> heroesToMissions = await _context.Heroes_to_missions.Where(entry => entry.MissionId == id && entry.PlayerId == playerId).ToListAsync();
             if (heroesToMissions.Count == 0) return "Mission not underway.";
             DateTime finishedAt = heroesToMissions.FirstOrDefault().FinishesAt;
 
-            if(DateTime.Now > finishedAt)
+            if(DateTime.Now > finishedAt) // mission finished
             {
                 Mission mission = await _context.Missions.FindAsync(id);
                 List<Hero> heroes = new List<Hero>();
@@ -127,6 +127,7 @@ namespace HeroCommandAPI.Controllers
                 }
 
                 BoostHeroes(heroes);
+                await RewardPlayer(playerId, mission.Reward);
                 _context.Heroes_to_missions.RemoveRange(heroesToMissions);
                 await _context.SaveChangesAsync();
 
@@ -184,7 +185,7 @@ namespace HeroCommandAPI.Controllers
             else return false;
         }
 
-        private void SendHeroesOnMission(List<Hero> heroes, Mission mission)
+        private void SendHeroesOnMission(List<Hero> heroes, Mission mission, int playerId)
         {
             DateTime doneAt = DateTime.Now.AddMilliseconds(mission.DurationMs);
             foreach (Hero hero in heroes)
@@ -193,7 +194,8 @@ namespace HeroCommandAPI.Controllers
                 {
                     HeroId = hero.Id,
                     MissionId = mission.Id,
-                    FinishesAt = doneAt
+                    FinishesAt = doneAt,
+                    PlayerId = playerId
                 };
 
                 _context.Heroes_to_missions.Add(link);
@@ -206,6 +208,16 @@ namespace HeroCommandAPI.Controllers
             {
                 hero.Skill++;
                 _context.Heroes.Update(hero);
+            }
+        }
+
+        private async Task RewardPlayer(int playerId, int reward)
+        {
+            Player player = await _context.Players.FindAsync(playerId);
+            if(player != null)
+            {
+                player.Coin += reward;
+                _context.Players.Update(player);
             }
         }
     }

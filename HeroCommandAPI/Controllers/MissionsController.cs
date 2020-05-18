@@ -13,6 +13,8 @@ namespace HeroCommandAPI.Controllers
     [ApiController]
     public class MissionsController : ControllerBase
     {
+        private const int MISSIONS_TO_PROGRESS = 2;
+
         private readonly HeroCommandContext _context;
 
         public MissionsController(HeroCommandContext context)
@@ -224,6 +226,14 @@ namespace HeroCommandAPI.Controllers
             if(player != null)
             {
                 player.Coin += reward;
+
+                player.MissionsSinceUpgrade++;
+                if(player.MissionsSinceUpgrade >= MISSIONS_TO_PROGRESS)
+                {
+                    player.MissionsSinceUpgrade = 0;
+                    player.Level++;
+                }
+
                 _context.Players.Update(player);
             }
         }

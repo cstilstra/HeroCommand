@@ -100,12 +100,21 @@ namespace HeroCommandAPI.Controllers
         {
             List<Hero> heroes = await GetHeroesByIds(heroIds);
             Mission mission = await _context.Missions.FindAsync(id);
+            Player player = await _context.Players.FindAsync(id);
 
             if (HeroesSkilledEnoughForMission(heroes, mission))
             {
-                SendHeroesOnMission(heroes, mission, playerId);
-                await _context.SaveChangesAsync();
-                return "Success";
+                if (PlayerCanAffordHeroes(player, heroes))
+                {
+                    SendHeroesOnMission(heroes, mission, player);
+                    await _context.SaveChangesAsync();
+                    return "Success";
+                }
+                else
+                {
+                    _context.RejectChanges();
+                    return "Player does not have enough coin";
+                }
             }
             else
             {
@@ -184,7 +193,6 @@ namespace HeroCommandAPI.Controllers
         private bool HeroesSkilledEnoughForMission(List<Hero> heroes, Mission mission)
         {
             int skillSum = 0;
-
             foreach (Hero hero in heroes)
             {
                 skillSum += hero.Skill;
@@ -194,20 +202,34 @@ namespace HeroCommandAPI.Controllers
             else return false;
         }
 
-        private void SendHeroesOnMission(List<Hero> heroes, Mission mission, int playerId)
+        private bool PlayerCanAffordHeroes(Player player, List<Hero> heroes)
+        {
+            int costSum = 0;
+            foreach(Hero hero in heroes)
+            {
+                costSum += hero.HireCost;
+            }
+
+            if (costSum <= player.Coin) return true;
+            else return false;
+        }
+
+        private void SendHeroesOnMission(List<Hero> heroes, Mission mission, Player player)
         {
             DateTime doneAt = DateTime.Now.AddMilliseconds(mission.DurationMs);
             foreach (Hero hero in heroes)
             {
+                player.Coin -= hero.HireCost;
                 var link = new HeroToMission
                 {
                     HeroId = hero.Id,
                     MissionId = mission.Id,
                     FinishesAt = doneAt,
-                    PlayerId = playerId
+                    PlayerId = player.Id
                 };
 
                 _context.Heroes_to_missions.Add(link);
+                _context.Players.Update(player);
             }
         }
 

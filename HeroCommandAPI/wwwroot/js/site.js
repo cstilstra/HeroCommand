@@ -13,10 +13,12 @@ function addHero() {
     const addHeroNameTextbox = document.getElementById('add-hero-name');
     const addHeroHireCostTextbox = document.getElementById('add-hero-hireCost');
     const addHeroSkillTextbox = document.getElementById('add-hero-skill');
+    const addHeroPlayerLevelVisibleTextbox = document.getElementById('add-hero-playerLevelVisible');
 ;    const hero = {
         name: addHeroNameTextbox.value.trim(),
         hireCost: parseInt(addHeroHireCostTextbox.value.trim(), 10),
-        skill: parseInt(addHeroSkillTextbox.value.trim(), 10)
+        skill: parseInt(addHeroSkillTextbox.value.trim(), 10),
+        playerLevelVisible: parseInt(addHeroPlayerLevelVisibleTextbox.value.trim(), 10)
     };
 
     fetch(heroUri, {
@@ -33,6 +35,7 @@ function addHero() {
             addHeroNameTextbox.value = '';
             addHeroHireCostTextbox.value = '';
             addHeroSkillTextbox.value = '';
+            addHeroPlayerLevelVisibleTextbox.value = '';
         })
         .catch(error => console.error('Unable to add item.', error));
 }
@@ -52,6 +55,7 @@ function displayHeroEditForm(id) {
     document.getElementById('edit-hero-id').value = item.id;
     document.getElementById('edit-hero-skill').value = item.skill;
     document.getElementById('edit-hero-hireCost').value = item.hireCost;
+    document.getElementById('edit-hero-playerLevelVisible').value = item.playerLevelVisible;
     document.getElementById('editHeroForm').style.display = 'block';
 }
 
@@ -61,7 +65,8 @@ function updateHero() {
         id: parseInt(itemId, 10),
         name: document.getElementById('edit-hero-name').value.trim(),
         skill: parseInt(document.getElementById('edit-hero-skill').value.trim(), 10),
-        hireCost: parseInt(document.getElementById('edit-hero-hireCost').value.trim(), 10)
+        hireCost: parseInt(document.getElementById('edit-hero-hireCost').value.trim(), 10),
+        playerLevelVisible: parseInt(document.getElementById('edit-hero-playerLevelVisible').value.trim(), 10)
     };
 
     fetch(`${heroUri}/${itemId}`, {
@@ -111,23 +116,31 @@ function _displayHeroes(data) {
 
         let tr = tBody.insertRow();
 
-        let td1 = tr.insertCell(0);
+        let td0 = tr.insertCell(0);
+        let idNode = document.createTextNode(item.id);
+        td0.appendChild(idNode);
+
+        let td1 = tr.insertCell(1);
         let textNode = document.createTextNode(item.name);
         td1.appendChild(textNode);
 
-        let td2 = tr.insertCell(1);
+        let td2 = tr.insertCell(2);
         let skillNode = document.createTextNode(item.skill);
         td2.appendChild(skillNode);
 
-        let td3 = tr.insertCell(2);
+        let td3 = tr.insertCell(3);
         let hireCostTextNode = document.createTextNode(item.hireCost);
         td3.appendChild(hireCostTextNode);
 
-        let td4 = tr.insertCell(3);
-        td4.appendChild(editButton);
+        let td4 = tr.insertCell(4);
+        let playerLevelVisibleTextNode = document.createTextNode(item.playerLevelVisible);
+        td4.appendChild(playerLevelVisibleTextNode);
 
-        let td5 = tr.insertCell(4);
-        td5.appendChild(deleteButton);
+        let td5 = tr.insertCell(5);
+        td5.appendChild(editButton);
+
+        let td6 = tr.insertCell(6);
+        td6.appendChild(deleteButton);
     });
 
     heroes = data;
@@ -149,11 +162,15 @@ function addMission() {
     const addMissionNameTextbox = document.getElementById('add-mission-name');
     const addMissionSkillCostTextbox = document.getElementById('add-mission-skill');
     const addMissionRewardTextbox = document.getElementById('add-mission-reward');
+    const addMissionDurationTextbox = document.getElementById('add-mission-duration');
+    const addMissionPlayerLevelVisibleTextbox = document.getElementById('add-mission-playerLevelVisible');
 
     const mission = {
         name: addMissionNameTextbox.value.trim(),
         skillCost: parseInt(addMissionSkillCostTextbox.value.trim(), 10),
-        reward: parseInt(addMissionRewardTextbox.value.trim(), 10)
+        reward: parseInt(addMissionRewardTextbox.value.trim(), 10),
+        durationMs: parseInt(addMissionDurationTextbox.value.trim(), 10),
+        playerLevelVisible: parseInt(addMissionPlayerLevelVisibleTextbox.value.trim(), 10)
     };
 
     fetch(missionUri, {
@@ -170,6 +187,8 @@ function addMission() {
             addMissionNameTextbox.value = '';
             addMissionSkillCostTextbox.value = '';
             addMissionRewardTextbox.value = '';
+            addMissionDurationTextbox.value = '';
+            addMissionPlayerLevelVisibleTextbox.value = '';
         })
         .catch(error => console.error('Unable to add item.', error));
 }
@@ -189,6 +208,8 @@ function displayMissionEditForm(id) {
     document.getElementById('edit-mission-id').value = item.id;
     document.getElementById('edit-mission-skill').value = item.skillCost;
     document.getElementById('edit-mission-reward').value = item.reward;
+    document.getElementById('edit-mission-duration').value = item.durationMs;
+    document.getElementById('edit-mission-playerLevelVisible').value = item.playerLevelVisible;
     document.getElementById('editMissionForm').style.display = 'block';
 }
 
@@ -198,7 +219,9 @@ function updateMission() {
         id: parseInt(itemId, 10),
         name: document.getElementById('edit-mission-name').value.trim(),
         skillCost: parseInt(document.getElementById('edit-mission-skill').value.trim(), 10),
-        reward: parseInt(document.getElementById('edit-mission-reward').value.trim(), 10)
+        reward: parseInt(document.getElementById('edit-mission-reward').value.trim(), 10),
+        durationMs: parseInt(document.getElementById('edit-mission-duration').value.trim(), 10),
+        playerLevelVisible: parseInt(document.getElementById('edit-mission-playerLevelVisible').value.trim(), 10)
     };
 
     fetch(`${missionUri}/${itemId}`, {
@@ -248,23 +271,35 @@ function _displayMissions(data) {
 
         let tr = tBody.insertRow();
 
-        let td1 = tr.insertCell(0);
+        let td0 = tr.insertCell(0);
+        let idNode = document.createTextNode(item.id);
+        td0.appendChild(idNode);
+
+        let td1 = tr.insertCell(1);
         let textNode = document.createTextNode(item.name);
         td1.appendChild(textNode);
 
-        let td2 = tr.insertCell(1);
+        let td2 = tr.insertCell(2);
         let skillNode = document.createTextNode(item.skillCost);
         td2.appendChild(skillNode);
 
-        let td3 = tr.insertCell(2);
+        let td3 = tr.insertCell(3);
         let hireCostTextNode = document.createTextNode(item.reward);
         td3.appendChild(hireCostTextNode);
 
-        let td4 = tr.insertCell(3);
-        td4.appendChild(editButton);
+        let td4 = tr.insertCell(4);
+        let durationTextNode = document.createTextNode(item.durationMs);
+        td4.appendChild(durationTextNode);
 
-        let td5 = tr.insertCell(4);
-        td5.appendChild(deleteButton);
+        let td5 = tr.insertCell(5);
+        let playerLevelVisibleTextNode = document.createTextNode(item.playerLevelVisible);
+        td5.appendChild(playerLevelVisibleTextNode);
+
+        let td6 = tr.insertCell(6);
+        td6.appendChild(editButton);
+
+        let td7 = tr.insertCell(7);
+        td7.appendChild(deleteButton);
     });
 
     missions = data;

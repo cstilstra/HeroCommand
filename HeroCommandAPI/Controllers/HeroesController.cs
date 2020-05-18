@@ -39,13 +39,21 @@ namespace HeroCommandAPI.Controllers
             return hero;
         }
 
-        // GET: api/Heroes/OnMission/1
-        [HttpGet("OnMission/{id}")]
-        public async Task<ActionResult<IEnumerable<Hero>>> GetHeroesOnMission(int id)
+        // GET: api/Heroes/VisibleByLevel/1
+        [HttpGet("VisibleByLevel/{playerLevel}")]
+        public async Task<ActionResult<IEnumerable<Hero>>> GetHeroesVisibleByPlayerLevel(int playerLevel)
         {
-            List<HeroToMission> heroesToMission = await _context.Heroes_to_missions.Where(entry => entry.MissionId == id).ToListAsync();
+            return await _context.Heroes.Where(hero => hero.PlayerLevelVisible <= playerLevel).ToListAsync();
+        }
 
+        // GET: api/Heroes/OnMission/1?playerId=1
+        [HttpGet("OnMission/{id}")]
+        public async Task<ActionResult<IEnumerable<Hero>>> GetHeroesOnMission(int id, int playerId)
+        {
             List<Hero> heroes = new List<Hero>();
+            if (playerId == 0) return heroes;
+
+            List<HeroToMission> heroesToMission = await _context.Heroes_to_missions.Where(entry => entry.MissionId == id && entry.PlayerId == playerId).ToListAsync();
 
             foreach (HeroToMission link in heroesToMission)
             {

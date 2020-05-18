@@ -41,6 +41,13 @@ namespace HeroCommandAPI.Controllers
             return mission;
         }
 
+        // GET: api/Missions/VisibleByLevel/1
+        [HttpGet("VisibleByLevel/{playerLevel}")]
+        public async Task<ActionResult<IEnumerable<Mission>>> GetHeroesVisibleByPlayerLevel(int playerLevel)
+        {
+            return await _context.Missions.Where(mission => mission.PlayerLevelVisible <= playerLevel).ToListAsync();
+        }
+
         // PUT: api/Missions/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.

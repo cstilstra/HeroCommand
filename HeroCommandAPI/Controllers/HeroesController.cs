@@ -39,6 +39,13 @@ namespace HeroCommandAPI.Controllers
             return hero;
         }
 
+        // GET: api/Heroes/VisibleByLevel/1
+        [HttpGet("VisibleByLevel/{playerLevel}")]
+        public async Task<ActionResult<IEnumerable<Hero>>> GetHeroesVisibleByPlayerLevel(int playerLevel)
+        {
+            return await _context.Heroes.Where(hero => hero.PlayerLevelVisible <= playerLevel).ToListAsync();
+        }
+
         // GET: api/Heroes/OnMission/1
         [HttpGet("OnMission/{id}")]
         public async Task<ActionResult<IEnumerable<Hero>>> GetHeroesOnMission(int id)

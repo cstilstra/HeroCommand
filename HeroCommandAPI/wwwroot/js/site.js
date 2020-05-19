@@ -305,3 +305,153 @@ function _displayMissions(data) {
     missions = data;
 }
 // End Missions
+
+// Players
+const playerUri = 'api/Players';
+let players = [];
+
+function getPlayers() {
+    fetch(playerUri)
+        .then(response => response.json())
+        .then(data => _displayPlayers(data))
+        .catch(error => console.error('Unable to get items.', error));
+}
+
+function addPlayer() {
+    const addPlayerNameTextbox = document.getElementById('add-player-name');
+    const addPlayerLevelTextbox = document.getElementById('add-player-level');
+    const addPlayerCoinTextbox = document.getElementById('add-player-coin');
+    const addPlayerMissionsTextbox = document.getElementById('add-player-missions');
+
+    const player = {
+        name: addPlayerNameTextbox.value.trim(),
+        level: parseInt(addPlayerLevelTextbox.value.trim(), 10),
+        coin: parseInt(addPlayerCoinTextbox.value.trim(), 10),
+        missionsSinceUpgrade: parseInt(addPlayerMissionsTextbox.value.trim(), 10)
+    };
+
+    fetch(playerUri, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(player)
+    })
+        .then(response => response.json())
+        .then(() => {
+            getPlayers();
+            addPlayerNameTextbox.value = '';
+            addPlayerLevelTextbox.value = '';
+            addPlayerCoinTextbox.value = '';
+            addPlayerMissionsTextbox.value = '';
+        })
+        .catch(error => console.error('Unable to add item.', error));
+}
+
+function deletePlayer(id) {
+    fetch(`${playerUri}/${id}`, {
+        method: 'DELETE'
+    })
+        .then(() => getItems())
+        .catch(error => console.error('Unable to delete item.', error));
+}
+
+function displayPlayerEditForm(id) {
+    const item = players.find(item => item.id === id);
+
+    document.getElementById('edit-player-name').value = item.name;
+    document.getElementById('edit-player-id').value = item.id;
+    document.getElementById('edit-player-level').value = item.level;
+    document.getElementById('edit-player-coin').value = item.coin;
+    document.getElementById('edit-player-missions').value = item.missionsSinceUpgrade;
+    document.getElementById('editPlayerForm').style.display = 'block';
+}
+
+function updatePlayer() {
+    const itemId = document.getElementById('edit-player-id').value;
+    const item = {
+        id: parseInt(itemId, 10),
+        name: document.getElementById('edit-player-name').value.trim(),
+        level: parseInt(document.getElementById('edit-player-level').value.trim(), 10),
+        coin: parseInt(document.getElementById('edit-player-coin').value.trim(), 10),
+        missionsSinceUpgrade: parseInt(document.getElementById('edit-player-missions').value.trim(), 10)
+    };
+
+    fetch(`${playerUri}/${itemId}`, {
+        method: 'PUT',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(item)
+    })
+        .then(() => getItems())
+        .catch(error => console.error('Unable to update item.', error));
+
+    getPlayers();
+    closePlayerInput();
+
+    return false;
+}
+
+function closePlayerInput() {
+    document.getElementById('editPlayerForm').style.display = 'none';
+}
+
+function _displayPlayerCount(itemCount) {
+    const name = (itemCount === 1) ? 'player' : 'players';
+
+    document.getElementById('playerCounter').innerText = `${itemCount} ${name}`;
+}
+
+function _displayPlayers(data) {
+    const tBody = document.getElementById('players');
+    tBody.innerHTML = '';
+
+    _displayPlayerCount(data.length);
+
+    const button = document.createElement('button');
+
+    data.forEach(item => {
+
+        let editButton = button.cloneNode(false);
+        editButton.innerText = 'Edit';
+        editButton.setAttribute('onclick', `displayPlayerEditForm(${item.id})`);
+
+        let deleteButton = button.cloneNode(false);
+        deleteButton.innerText = 'Delete';
+        deleteButton.setAttribute('onclick', `deletePlayer(${item.id})`);
+
+        let tr = tBody.insertRow();
+
+        let td0 = tr.insertCell(0);
+        let idNode = document.createTextNode(item.id);
+        td0.appendChild(idNode);
+
+        let td1 = tr.insertCell(1);
+        let nameNode = document.createTextNode(item.name);
+        td1.appendChild(nameNode);
+
+        let td2 = tr.insertCell(2);
+        let levelNode = document.createTextNode(item.level);
+        td2.appendChild(levelNode);
+
+        let td3 = tr.insertCell(3);
+        let coinNode = document.createTextNode(item.coin);
+        td3.appendChild(coinNode);
+
+        let td4 = tr.insertCell(4);
+        let missionsSinceUpgradeNode = document.createTextNode(item.missionsSinceUpgrade);
+        td4.appendChild(missionsSinceUpgradeNode);
+
+        let td5 = tr.insertCell(5);
+        td5.appendChild(editButton);
+
+        let td6 = tr.insertCell(6);
+        td6.appendChild(deleteButton);
+    });
+
+    players = data;
+}
+// End Players

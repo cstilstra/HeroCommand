@@ -8,15 +8,15 @@
 <body>
     <h1>Hero Command Admin Panel</h1>
     <!-- Heroes -->
-    <div  class="panel">
-        <h3>Add Hero</h3>
+    <div class="panel">
+        <h3>Heroes</h3>
         <form action="javascript:void(0);" method="POST" onsubmit="addHero()">
             <label>Name</label>
             <input type="text" id="add-hero-name" placeholder="Hero Name"><br />
             <label>Skill</label>
             <input type="text" id="add-hero-skill" placeholder="0"><br />
             <label>Cost</label>
-            <input type="text" id="add-hero-hireCost" placeholder="0"><br /> 
+            <input type="text" id="add-hero-hireCost" placeholder="0"><br />
             <label>PlayerLevelVisible</label>
             <input type="text" id="add-hero-playerLevelVisible" placeholder="1" /><br />
             <input type="submit" value="Add">
@@ -59,7 +59,7 @@
 
     <!-- Missions -->
     <div class="panel">
-        <h3>Add Mission</h3>
+        <h3>Missions</h3>
         <form action="javascript:void(0);" method="POST" onsubmit="addMission()">
             <label>Name</label>
             <input type="text" id="add-mission-name" placeholder="Mission Name"><br />
@@ -110,12 +110,64 @@
             <tbody id="missions"></tbody>
         </table>
     </div>
-    <!-- end Heroes -->
+    <!-- end Missions -->
+
+    <!-- Players -->
+    <div class="panel">
+        <h3>Players</h3>
+
+        <form action="javascript:void(0);" method="POST" onsubmit="addPlayer()">
+            <label>Name</label>
+            <input type="text" id="add-player-name" placeholder="Player Name"><br />
+            <label>Level</label>
+            <input type="text" id="add-player-level" placeholder="1"><br />
+            <label>Coin</label>
+            <input type="text" id="add-player-coin" placeholder="0"><br />
+            <label>MissionsSinceUpgrade</label>
+            <input type="text" id="add-player-missions" placeholder="0"><br />
+            <input type="submit" value="Add">
+        </form>
+
+        <div id="editPlayerForm" style="display:none">
+            <h3>Edit</h3>
+            <form action="javascript:void(0);" onsubmit="updatePlayer()">
+                <label>Id</label>
+                <input type="text" disabled="disabled" id="edit-player-id">
+                <label>Name</label>
+                <input type="text" id="edit-player-name"><br />
+                <label>Level</label>
+                <input type="text" id="edit-player-level" /><br />
+                <label>Coin</label>
+                <input type="text" id="edit-player-coin" /><br />
+                <label>MissionsSinceUpgrade</label>
+                <input type="text" id="edit-player-missions" /><br />
+                <input type="submit" value="Save">
+                <a onclick="closePlayerInput()" aria-label="Close">&#10006;</a>
+            </form>
+        </div>
+
+        <p id="playerCounter"></p>
+
+        <table>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Level</th>
+                <th>Coin</th>
+                <th>MissionsSinceUpgrade</th>
+                <th></th>
+                <th></th>
+            </tr>
+            <tbody id="players"></tbody>
+        </table>
+    </div>
+    <!-- end Players -->
 
     <script src="js/site.js" asp-append-version="true"></script>
     <script type="text/javascript">
         getHeroes();
         getMissions();
+        getPlayers();
     </script>
 </body>
 </html>

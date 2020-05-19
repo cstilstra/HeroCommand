@@ -100,9 +100,9 @@ namespace HeroCommandAPI.Controllers
         {
             List<Hero> heroes = await GetHeroesByIds(heroIds);
             Mission mission = await _context.Missions.FindAsync(id);
-            Player player = await _context.Players.FindAsync(id);
+            Player player = await _context.Players.FindAsync(playerId);
 
-            if (HeroesSkilledEnoughForMission(heroes, mission))
+            if (await HeroesSkilledEnoughForMission(heroes, mission, playerId))
             {
                 if (PlayerCanAffordHeroes(player, heroes))
                 {
@@ -144,7 +144,7 @@ namespace HeroCommandAPI.Controllers
                     }
                 }
 
-                BoostHeroes(heroes);
+                await BoostHeroes(heroes, playerId);
                 await RewardPlayer(playerId, mission.Reward);
                 _context.Heroes_to_missions.RemoveRange(heroesToMissions);
                 await _context.SaveChangesAsync();
@@ -190,16 +190,34 @@ namespace HeroCommandAPI.Controllers
             return heroes;
         }
 
-        private bool HeroesSkilledEnoughForMission(List<Hero> heroes, Mission mission)
+        private async Task<bool> HeroesSkilledEnoughForMission(List<Hero> heroes, Mission mission, int playerId)
         {
             int skillSum = 0;
             foreach (Hero hero in heroes)
             {
-                skillSum += hero.Skill;
+                HeroToPlayer htp = await GetHeroToPlayerLink(hero.Id, playerId);
+
+                skillSum += (hero.Skill + htp.HeroAdditionalSkill);
             }
 
             if (skillSum >= mission.SkillCost) return true;
             else return false;
+        }
+
+        private async Task<HeroToPlayer> GetHeroToPlayerLink(int heroId, int playerId)
+        {
+            HeroToPlayer htpLink = await _context.Heroes_to_players.FindAsync(heroId, playerId);
+            if (htpLink == null)
+            {                
+                htpLink = new HeroToPlayer()
+                {
+                    HeroId = heroId,
+                    PlayerId = playerId,
+                    HeroAdditionalSkill = 0
+                };
+                await _context.Heroes_to_players.AddAsync(htpLink);
+            }
+            return htpLink;
         }
 
         private bool PlayerCanAffordHeroes(Player player, List<Hero> heroes)
@@ -233,12 +251,13 @@ namespace HeroCommandAPI.Controllers
             }
         }
 
-        private void BoostHeroes(List<Hero> heroes)
+        private async Task BoostHeroes(List<Hero> heroes, int playerId)
         {
             foreach(Hero hero in heroes)
             {
-                hero.Skill++;
-                _context.Heroes.Update(hero);
+                HeroToPlayer htp = await GetHeroToPlayerLink(hero.Id, playerId);
+                htp.HeroAdditionalSkill++;
+                _context.Heroes_to_players.Update(htp);
             }
         }
 

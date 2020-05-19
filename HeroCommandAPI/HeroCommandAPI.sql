@@ -1,5 +1,5 @@
 CREATE TABLE `heroes` (
-  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `Id` int PRIMARY KEY AUTO_INCREMENT,
   `Name` varchar(255),
   `HireCost` int,
   `Skill` int,
@@ -7,7 +7,7 @@ CREATE TABLE `heroes` (
 );
 
 CREATE TABLE `missions` (
-  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `Id` int PRIMARY KEY AUTO_INCREMENT,
   `Name` varchar(255),
   `SkillCost` int,
   `Reward` int,
@@ -23,15 +23,27 @@ CREATE TABLE `heroes_to_missions` (
 );
 
 CREATE TABLE `players` (
-  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `Id` int PRIMARY KEY AUTO_INCREMENT,
   `Name` varchar(255),
   `Level` int,
   `Coin` int,
   `MissionsSinceUpgrade` int
 );
 
-ALTER TABLE `heroes_to_missions` ADD FOREIGN KEY (`HeroId`) REFERENCES `heroes` (`id`);
+CREATE TABLE `heroes_to_players` (
+  `HeroId` int,
+  `PlayerId` int,
+  `HeroAdditionalSkill` int,
+  PRIMARY KEY (`HeroId`, `PlayerId`)
+);
 
-ALTER TABLE `heroes_to_missions` ADD FOREIGN KEY (`MissionId`) REFERENCES `missions` (`id`);
+ALTER TABLE `heroes_to_missions` ADD FOREIGN KEY (`HeroId`) REFERENCES `heroes` (`Id`);
 
-ALTER TABLE `heroes_to_missions` ADD FOREIGN KEY (`PlayerId`) REFERENCES `players` (`id`);
+ALTER TABLE `heroes_to_missions` ADD FOREIGN KEY (`MissionId`) REFERENCES `missions` (`Id`);
+
+ALTER TABLE `heroes_to_missions` ADD FOREIGN KEY (`PlayerId`) REFERENCES `players` (`Id`);
+
+ALTER TABLE `heroes_to_players` ADD FOREIGN KEY (`HeroId`) REFERENCES `heroes` (`Id`);
+
+ALTER TABLE `heroes_to_players` ADD FOREIGN KEY (`PlayerId`) REFERENCES `players` (`Id`);
+

@@ -64,6 +64,14 @@ namespace HeroCommandAPI.Controllers
             return heroes;
         }
 
+        // GET: api/Heroes/ToPlayer/1
+        [HttpGet("ToPlayer/{id}")]
+        public async Task<ActionResult<IEnumerable<HeroToPlayer>>> GetHeroesToPlayer(int id)
+        {
+            List<HeroToPlayer> heroesToPlayer = await _context.Heroes_to_players.Where(entry => entry.PlayerId == id).ToListAsync();
+            return heroesToPlayer;
+        }
+
         // PUT: api/Heroes/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.

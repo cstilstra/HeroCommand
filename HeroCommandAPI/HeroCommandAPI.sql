@@ -16,10 +16,11 @@ CREATE TABLE `missions` (
 );
 
 CREATE TABLE `heroes_to_missions` (
-  `HeroId` int PRIMARY KEY,
-  `MissionId` int,
+  `HeroId` int,
   `PlayerId` int,
-  `FinishesAt` timestamp
+  `MissionId` int,
+  `FinishesAt` timestamp,
+  PRIMARY KEY (`HeroId`, `PlayerId`)
 );
 
 CREATE TABLE `players` (
@@ -39,9 +40,9 @@ CREATE TABLE `heroes_to_players` (
 
 ALTER TABLE `heroes_to_missions` ADD FOREIGN KEY (`HeroId`) REFERENCES `heroes` (`Id`);
 
-ALTER TABLE `heroes_to_missions` ADD FOREIGN KEY (`MissionId`) REFERENCES `missions` (`Id`);
-
 ALTER TABLE `heroes_to_missions` ADD FOREIGN KEY (`PlayerId`) REFERENCES `players` (`Id`);
+
+ALTER TABLE `heroes_to_missions` ADD FOREIGN KEY (`MissionId`) REFERENCES `missions` (`Id`);
 
 ALTER TABLE `heroes_to_players` ADD FOREIGN KEY (`HeroId`) REFERENCES `heroes` (`Id`);
 

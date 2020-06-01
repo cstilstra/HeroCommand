@@ -11,22 +11,54 @@
     </div>
 
     <div class="panel">
+
+        <div id="available-missions-panel">
+            <h3>Available Missions</h3>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Skill Requirement</th>
+                    <th>Reward</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                <tbody id="visible-missions-tbody" />
+            </table>
+            <br />
+        </div>
+
+        <h3>Heroes for Hire</h3>
         <table>
             <tr>
                 <th>Name</th>
                 <th>Skill</th>
                 <th>Cost</th>
+                <th></th>
+                <th></th>
             </tr>
-            <tbody id="visible-heroes-tbody"/>
+            <tbody id="visible-heroes-tbody" />
         </table>
-        <table>
-            <tr>
-                <th>Name</th>
-                <th>Skill Requirement</th>
-                <th>Reward</th>
-            </tr>
-            <tbody id="visible-missions-tbody" />
-        </table>
+
+        <div id="mission-assignment-panel" style="display:none">
+            <h3 id="m-a-mission-name">Mission: </h3>
+            <div id="m-a-skills">Skill: 0/0</div>
+            <br />
+            <table>
+                <tr>
+                    <th>Heroes on Mission</th>
+                    <th></th>
+                </tr>
+                <tbody id="heroes-on-mission-tbody" />
+            </table>
+            <br />
+            <form action="javascript:void(0);" method="POST" onsubmit="_beginMission()">
+                <input type="submit" value="Begin Mission">
+            </form>
+            <form action="javascript:void(0);" method="POST" onsubmit="_cancelMissionAssignment()">
+                <input type="submit" value="Cancel">
+            </form>
+            <br />
+        </div>
     </div>
 
     <script src="js/playerPage.js" asp-append-version="true"></script>

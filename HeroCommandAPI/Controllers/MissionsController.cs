@@ -13,7 +13,7 @@ namespace HeroCommandAPI.Controllers
     [ApiController]
     public class MissionsController : ControllerBase
     {
-        private const int MISSIONS_TO_PROGRESS = 2;
+        private const int MISSIONS_TO_PROGRESS = 5;
 
         private readonly HeroCommandContext _context;
 
@@ -128,7 +128,8 @@ namespace HeroCommandAPI.Controllers
         public async Task<ActionResult<string>> TryEndMission(int id, int playerId)
         {
             List<HeroToMission> heroesToMissions = await _context.Heroes_to_missions.Where(entry => entry.MissionId == id && entry.PlayerId == playerId).ToListAsync();
-            if (heroesToMissions.Count == 0) return "Mission not underway.";
+            if (heroesToMissions.Count == 0) return "Mission not underway";
+
             DateTime finishedAt = heroesToMissions.FirstOrDefault().FinishesAt;
 
             if(DateTime.Now > finishedAt) // mission finished
@@ -153,7 +154,10 @@ namespace HeroCommandAPI.Controllers
             }
             else
             {
-                return "Mission not yet completed";
+                //calculate time until finish
+                string timeTilFinish = (finishedAt - DateTime.Now).ToString();
+
+                return $"{timeTilFinish} until mission complete";
             }
         }
 

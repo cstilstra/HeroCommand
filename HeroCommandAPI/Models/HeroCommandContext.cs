@@ -17,6 +17,8 @@ namespace HeroCommandAPI.Models
         {
             modelBuilder.Entity<HeroToPlayer>()
                 .HasKey(k => new { k.HeroId, k.PlayerId });
+            modelBuilder.Entity<HeroToMission>()
+                .HasKey(k => new { k.HeroId, k.PlayerId });
         }
 
         public void RejectChanges()

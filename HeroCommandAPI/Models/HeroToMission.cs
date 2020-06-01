@@ -1,14 +1,16 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HeroCommandAPI.Models
 {
     public class HeroToMission
     {
-        [Key]
+        [Key, Column(Order = 0)]
         public int HeroId { get; set; }
-        public int MissionId { get; set; }
+        [Key, Column(Order = 1)]
         public int PlayerId { get; set; }
+        public int MissionId { get; set; }
         public DateTime FinishesAt { get; set; }
     }
 }

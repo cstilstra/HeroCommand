@@ -121,7 +121,6 @@ function _displayMissions(data) {
 }
 
 function _beginAssignHeroes(missionId) {
-    console.log(`missionId:${missionId}`)
     selectedMission = missions.filter(function (item) { return item.id == missionId })[0]
 
     selectedHeroes = []
@@ -282,6 +281,7 @@ function _showAssignHeroButtons(trueFalse) {
         for (let item of assignHeroButtons) {
             item.style.display = 'block'
         }
+        _findAllHeroesOnMission()
     } else {
         for (let item of assignHeroButtons) {
             item.style.display = 'none'
@@ -289,8 +289,25 @@ function _showAssignHeroButtons(trueFalse) {
     }
 }
 
-function _checkIfHeroesOnMission() {
-    heroes.forEach(hero => {
+function _findAllHeroesOnMission() {
+    missions.forEach(mission => {
+        fetch(`${heroUri}/onMission/${mission.id}?playerId=${player.id}`, {
+            method: 'GET'
+        })
+            .then(response => response.json())
+            .then(data => _handleHeroesOnMissionData(data, mission))
+            .catch(error => console.error('Unable to get player.', error))
+    })
+}
 
+function _handleHeroesOnMissionData(data, mission) {
+    data.forEach(hero => {
+        console.log(`${hero.name} is currently on mission: ${mission.name}`)
+
+        const assignHeroButton = document.getElementById(`h-a-b-${hero.id}`)
+        assignHeroButton.style.display = 'none'
+        const heroOnMissionText = document.getElementById(`h-o-m-${hero.id}`)
+        heroOnMissionText.innerText = `currently on mission: ${mission.name}`
+        heroOnMissionText.style.display = 'block'
     })
 }

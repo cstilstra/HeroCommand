@@ -7,10 +7,19 @@ namespace HeroCommandAPI.Models
         public DbSet<Hero> Heroes { get; set; }
         public DbSet<Mission> Missions { get; set; }
         public DbSet<HeroToMission> Heroes_to_missions { get; set; }
+        public DbSet<HeroToPlayer> Heroes_to_players { get; set; }
         public DbSet<Player> Players { get; set; }
 
         public HeroCommandContext(DbContextOptions<HeroCommandContext> options)
             : base(options) { }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<HeroToPlayer>()
+                .HasKey(k => new { k.HeroId, k.PlayerId });
+            modelBuilder.Entity<HeroToMission>()
+                .HasKey(k => new { k.HeroId, k.PlayerId });
+        }
 
         public void RejectChanges()
         {

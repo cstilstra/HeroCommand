@@ -1,6 +1,7 @@
 ﻿using HeroCommandAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -62,6 +63,14 @@ namespace HeroCommandAPI.Controllers
             }
 
             return heroes;
+        }
+
+        // GET: api/Heroes/ToPlayer/1
+        [HttpGet("ToPlayer/{playerId}")]
+        public async Task<ActionResult<IEnumerable<HeroToPlayer>>> GetHeroesToPlayer(int playerId)
+        {
+            List<HeroToPlayer> heroesToPlayer = await _context.Heroes_to_players.Where(entry => entry.PlayerId == playerId).ToListAsync();
+            return heroesToPlayer;
         }
 
         // PUT: api/Heroes/5

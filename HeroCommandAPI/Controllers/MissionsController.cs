@@ -13,7 +13,7 @@ namespace HeroCommandAPI.Controllers
     [ApiController]
     public class MissionsController : ControllerBase
     {
-        private const int MISSIONS_TO_PROGRESS = 2;
+        private const int MISSIONS_TO_PROGRESS = 5;
 
         private readonly HeroCommandContext _context;
 
@@ -100,12 +100,21 @@ namespace HeroCommandAPI.Controllers
         {
             List<Hero> heroes = await GetHeroesByIds(heroIds);
             Mission mission = await _context.Missions.FindAsync(id);
+            Player player = await _context.Players.FindAsync(playerId);
 
-            if (HeroesSkilledEnoughForMission(heroes, mission))
+            if (await HeroesSkilledEnoughForMission(heroes, mission, playerId))
             {
-                SendHeroesOnMission(heroes, mission, playerId);
-                await _context.SaveChangesAsync();
-                return "Success";
+                if (PlayerCanAffordHeroes(player, heroes))
+                {
+                    SendHeroesOnMission(heroes, mission, player);
+                    await _context.SaveChangesAsync();
+                    return "Success";
+                }
+                else
+                {
+                    _context.RejectChanges();
+                    return "Player does not have enough coin";
+                }
             }
             else
             {
@@ -119,7 +128,8 @@ namespace HeroCommandAPI.Controllers
         public async Task<ActionResult<string>> TryEndMission(int id, int playerId)
         {
             List<HeroToMission> heroesToMissions = await _context.Heroes_to_missions.Where(entry => entry.MissionId == id && entry.PlayerId == playerId).ToListAsync();
-            if (heroesToMissions.Count == 0) return "Mission not underway.";
+            if (heroesToMissions.Count == 0) return "Mission not underway";
+
             DateTime finishedAt = heroesToMissions.FirstOrDefault().FinishesAt;
 
             if(DateTime.Now > finishedAt) // mission finished
@@ -135,7 +145,7 @@ namespace HeroCommandAPI.Controllers
                     }
                 }
 
-                BoostHeroes(heroes);
+                await BoostHeroes(heroes, playerId);
                 await RewardPlayer(playerId, mission.Reward);
                 _context.Heroes_to_missions.RemoveRange(heroesToMissions);
                 await _context.SaveChangesAsync();
@@ -144,7 +154,10 @@ namespace HeroCommandAPI.Controllers
             }
             else
             {
-                return "Mission not yet completed";
+                //calculate time until finish
+                string timeTilFinish = (finishedAt - DateTime.Now).ToString();
+
+                return $"{timeTilFinish} until mission complete";
             }
         }
 
@@ -181,42 +194,74 @@ namespace HeroCommandAPI.Controllers
             return heroes;
         }
 
-        private bool HeroesSkilledEnoughForMission(List<Hero> heroes, Mission mission)
+        private async Task<bool> HeroesSkilledEnoughForMission(List<Hero> heroes, Mission mission, int playerId)
         {
             int skillSum = 0;
-
             foreach (Hero hero in heroes)
             {
-                skillSum += hero.Skill;
+                HeroToPlayer htp = await GetHeroToPlayerLink(hero.Id, playerId);
+
+                skillSum += (hero.Skill + htp.HeroAdditionalSkill);
             }
 
             if (skillSum >= mission.SkillCost) return true;
             else return false;
         }
 
-        private void SendHeroesOnMission(List<Hero> heroes, Mission mission, int playerId)
+        private async Task<HeroToPlayer> GetHeroToPlayerLink(int heroId, int playerId)
+        {
+            HeroToPlayer htpLink = await _context.Heroes_to_players.FindAsync(heroId, playerId);
+            if (htpLink == null)
+            {                
+                htpLink = new HeroToPlayer()
+                {
+                    HeroId = heroId,
+                    PlayerId = playerId,
+                    HeroAdditionalSkill = 0
+                };
+                await _context.Heroes_to_players.AddAsync(htpLink);
+            }
+            return htpLink;
+        }
+
+        private bool PlayerCanAffordHeroes(Player player, List<Hero> heroes)
+        {
+            int costSum = 0;
+            foreach(Hero hero in heroes)
+            {
+                costSum += hero.HireCost;
+            }
+
+            if (costSum <= player.Coin) return true;
+            else return false;
+        }
+
+        private void SendHeroesOnMission(List<Hero> heroes, Mission mission, Player player)
         {
             DateTime doneAt = DateTime.Now.AddMilliseconds(mission.DurationMs);
             foreach (Hero hero in heroes)
             {
+                player.Coin -= hero.HireCost;
                 var link = new HeroToMission
                 {
                     HeroId = hero.Id,
                     MissionId = mission.Id,
                     FinishesAt = doneAt,
-                    PlayerId = playerId
+                    PlayerId = player.Id
                 };
 
                 _context.Heroes_to_missions.Add(link);
+                _context.Players.Update(player);
             }
         }
 
-        private void BoostHeroes(List<Hero> heroes)
+        private async Task BoostHeroes(List<Hero> heroes, int playerId)
         {
             foreach(Hero hero in heroes)
             {
-                hero.Skill++;
-                _context.Heroes.Update(hero);
+                HeroToPlayer htp = await GetHeroToPlayerLink(hero.Id, playerId);
+                htp.HeroAdditionalSkill++;
+                _context.Heroes_to_players.Update(htp);
             }
         }
 

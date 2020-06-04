@@ -2,5 +2,9 @@
 }
 
 .panel {
-    background-color: lightgray
+    background-color: lightgray;
+}
+
+h4{
+    margin: 0;
 }

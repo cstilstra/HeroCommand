@@ -9,6 +9,22 @@
     }
   },
   "profiles": {
+    "LaunchToLogin": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "login.html",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "LaunchToAdmin": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "admin.html",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,

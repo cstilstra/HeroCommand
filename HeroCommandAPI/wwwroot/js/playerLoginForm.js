@@ -74,7 +74,7 @@ class ExistingPlayers extends React.Component {
             <div className="panel">
 
                 <h4>Existing Players</h4>
-                
+                <p>{playersItems.length} players found</p>
                 <table>
                     <tbody id="existingPlayersForm">
                         {playersItems.length>0 ? playersItems : <tr><td>Searching for players...</td></tr>}

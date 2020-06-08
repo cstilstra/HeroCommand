@@ -65,36 +65,15 @@ class HeroControl extends React.Component {
 }
 
 class ExistingHeroes extends React.Component {
-    constructor(props) {
-        super(props)
-
-        this.handleDelete = this.handleDelete.bind(this)
-    }
 
     updateHeroes() {
         this.props.updateHeroes()
     }
 
-    handleDelete(id, event) {
-        console.log(`Delete Hero, id: ${id}`)
-
-        fetch(`${heroUri}/${id}`, {
-            method: 'DELETE'
-        })
-            .then(() => this.updateHeroes())
-            .catch(error => console.error('Unable to delete item.', error));
-        event.preventDefault()
-    }
-
     render() {
-        const heroesItems = this.props.heroes.map((hero) =>
+        const heroesItems = this.props.heroes.map((hero) => 
             <tr key={hero.id}>
-                <td>{hero.id}</td>
-                <td>{hero.name}</td>
-                <td>{hero.skill}</td>
-                <td>{hero.hireCost} coins</td>
-                <td>{hero.playerLevelVisible}</td>
-                <td><button onClick={(e) => this.handleDelete(hero.id, e)}>Delete</button></td>
+                <ExistingHeroRow id={hero.id} name={hero.name} skill={hero.skill} hireCost={hero.hireCost} playerLevelVisible={hero.playerLevelVisible} updateHeroes={this.props.updateHeroes} />
             </tr>
         );
 
@@ -110,13 +89,148 @@ class ExistingHeroes extends React.Component {
                             <th>Skill</th>
                             <th>Hire Cost</th>
                             <th>Level Visible</th>
-                            <th />
                         </tr>
                         {heroesItems.length > 0 ? heroesItems : <tr><td>Searching for heroes...</td></tr>}
                     </tbody>
                 </table>
             </div>
         )        
+    }
+}
+
+class ExistingHeroRow extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            isEditing: false,
+            buttonText: 'Edit',
+            name: this.props.name,
+            skill: this.props.skill,
+            hireCost: this.props.hireCost,
+            playerLevelVisible: this.props.playerLevelVisible
+        }
+
+        this.handleEditSaveButtonClick = this.handleEditSaveButtonClick.bind(this)
+        this.handleDelete = this.handleDelete.bind(this)
+        this.handleNameChange = this.handleNameChange.bind(this)
+        this.handleHireCostChange = this.handleHireCostChange.bind(this)
+        this.handleSkillChange = this.handleSkillChange.bind(this)
+        this.handlePlayerLevelVisibleChange = this.handlePlayerLevelVisibleChange.bind(this)
+    }
+
+    initialState() {
+        this.setState({
+            isEditing: false,
+            buttonText: 'Edit',
+            name: this.props.name,
+            skill: this.props.skill,
+            hireCost: this.props.hireCost,
+            playerLevelVisible: this.props.playerLevelVisible
+        })
+    }
+
+    updateHeroes() {
+        this.props.updateHeroes()
+    }
+
+    handleNameChange() {
+        this.setState({ name: event.target.value })
+    }
+
+    handleHireCostChange() {
+        this.setState({ hireCost: event.target.value })
+    }
+
+    handleSkillChange() {
+        this.setState({ skill: event.target.value })
+    }
+
+    handlePlayerLevelVisibleChange() {
+        this.setState({ playerLevelVisible: event.target.value })
+    }
+
+    handleEditSaveButtonClick(event) {
+        if (this.state.isEditing) {
+            const hero = {
+                id: this.props.id,
+                name: this.state.name,
+                skill: parseInt(this.state.skill, 10),
+                hireCost: parseInt(this.state.hireCost, 10),
+                playerLevelVisible: parseInt(this.state.playerLevelVisible, 10)
+            }
+
+            fetch(`${heroUri}/${hero.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(hero)
+            })
+                .then(() => {
+                    console.log(`${hero.name} updated`)
+                    this.updateHeroes()
+                })
+                .catch(error => console.error('Unable to update item.', error));
+
+            this.setState({
+                isEditing: false,
+                buttonText:'Edit'
+            })
+        } else {
+            this.setState({
+                isEditing: true,
+                buttonText: 'Save'
+            })
+        }
+
+        event.preventDefault()
+    }
+
+    handleDelete(event) {
+        console.log(`Delete Hero, id: ${this.props.id}`)
+
+        fetch(`${heroUri}/${this.props.id}`, {
+            method: 'DELETE'
+        })
+            .then(() => this.updateHeroes())
+            .catch(error => console.error('Unable to delete item.', error));
+        event.preventDefault()
+    }
+
+    handleCancel(event) {
+        this.initialState()
+        event.preventDefault()
+    }
+
+    render() {
+        if (this.state.isEditing) {
+            return(
+                <>
+                    <td>{this.props.id}</td>
+                    <td><input type="text" value={this.state.name} onChange={this.handleNameChange} /></td>
+                    <td><input type="text" value={this.state.skill} onChange={this.handleSkillChange} /></td>
+                    <td><input type="text" value={this.state.hireCost} onChange={this.handleHireCostChange} /></td>
+                    <td><input type="text" value={this.state.playerLevelVisible} onChange={this.handlePlayerLevelVisibleChange} /></td>
+                    <td><button onClick={(e) => this.handleCancel(e)}>Cancel</button></td>
+                    <td><button onClick={(e) => this.handleEditSaveButtonClick(e)}>{this.state.buttonText}</button></td>
+                    <td><button onClick={(e) => this.handleDelete(e)}>Delete</button></td>
+                </>
+            )
+        } else {
+            return (            
+                <>
+                    <td>{this.props.id}</td>
+                    <td>{this.state.name}</td>
+                    <td>{this.state.skill}</td>
+                    <td>{this.state.hireCost} coins</td>
+                    <td>{this.state.playerLevelVisible}</td>
+                    <td><button onClick={(e) => this.handleEditSaveButtonClick(e)}>{this.state.buttonText}</button></td>
+                    <td><button onClick={(e) => this.handleDelete(e)}>Delete</button></td>
+                </>
+            )
+        }
     }
 }
 
@@ -262,37 +376,22 @@ class MissionControl extends React.Component {
 }
 
 class ExistingMissions extends React.Component {
-    constructor(props) {
-        super(props)
-
-        this.handleDelete = this.handleDelete.bind(this)
-    }
 
     updateMissions() {
         this.props.updateMissions()
     }
 
-    handleDelete(id, event) {
-        console.log(`Delete Mission, Id: ${id}`)
-
-        fetch(`${missionUri}/${id}`, {
-            method: 'DELETE'
-        })
-            .then(() => this.updateMissions())
-            .catch(error => console.error('Unable to delete item.', error));
-        event.preventDefault()
-    }
-
     render() {
         const missionsItems = this.props.missions.map((mission) =>
             <tr key={mission.id}>
-                <td>{mission.id}</td>
-                <td>{mission.name}</td>
-                <td>{mission.skillCost} skill</td>
-                <td>{mission.reward} coins</td>
-                <td>{mission.durationMs} ms</td>
-                <td>{mission.playerLevelVisible}</td>
-                <td><button onClick={(e) => this.handleDelete(mission.id, e)}>Delete</button></td>
+                <ExistingMissionRow
+                    id={mission.id} name={mission.name}
+                    skillCost={mission.skillCost}
+                    reward={mission.reward}
+                    durationMs={mission.durationMs}
+                    playerLevelVisible={mission.playerLevelVisible}
+                    updateMissions={this.props.updateMissions}
+                />
             </tr>
         );
 
@@ -309,13 +408,158 @@ class ExistingMissions extends React.Component {
                             <th>Reward</th>
                             <th>Duration</th>
                             <th>Level Visible</th>
-                            <th />
                         </tr>
                         {missionsItems.length > 0 ? missionsItems : <tr><td>Searching for missions...</td></tr>}
                     </tbody>
                 </table>
             </div>
         )        
+    }
+}
+
+class ExistingMissionRow extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            isEditing: false,
+            buttonText: 'Edit',
+            name: this.props.name,
+            skillCost: this.props.skillCost,
+            reward: this.props.reward,
+            durationMs: this.props.durationMs,
+            playerLevelVisible: this.props.playerLevelVisible
+        }
+
+        this.handleEditSaveButtonClick = this.handleEditSaveButtonClick.bind(this)
+        this.handleDelete = this.handleDelete.bind(this)
+        this.handleNameChange = this.handleNameChange.bind(this)
+        this.handleSkillCostChange = this.handleSkillCostChange.bind(this)
+        this.handleRewardChange = this.handleRewardChange.bind(this)
+        this.handleDurationMsChange = this.handleDurationMsChange.bind(this)
+        this.handlePlayerLevelVisibleChange = this.handlePlayerLevelVisibleChange.bind(this)
+    }
+
+    initialState() {
+        this.setState({
+            isEditing: false,
+            buttonText: 'Edit',
+            name: this.props.name,
+            skillCost: this.props.skillCost,
+            reward: this.props.reward,
+            durationMs: this.props.durationMs,
+            playerLevelVisible: this.props.playerLevelVisible
+        })
+    }
+
+    updateMissions() {
+        this.props.updateMissions()
+    }
+
+    handleNameChange() {
+        this.setState({ name: event.target.value })
+    }
+
+    handleRewardChange() {
+        this.setState({ reward: event.target.value })
+    }
+
+    handleSkillCostChange() {
+        this.setState({ skillCost: event.target.value })
+    }
+
+    handleDurationMsChange() {
+        this.setState({ durationMs: event.target.value})
+    }
+
+    handlePlayerLevelVisibleChange() {
+        this.setState({ playerLevelVisible: event.target.value })
+    }
+
+    handleEditSaveButtonClick(event) {
+        if (this.state.isEditing) {
+            const mission = {
+                id: this.props.id,
+                name: this.state.name,
+                skillCost: parseInt(this.state.skillCost, 10),
+                reward: parseInt(this.state.reward, 10),
+                durationMs: parseInt(this.state.durationMs, 10),
+                playerLevelVisible: parseInt(this.state.playerLevelVisible, 10)
+            }
+
+            fetch(`${missionUri}/${mission.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(mission)
+            })
+                .then(() => {
+                    console.log(`${mission.name} updated`)
+                    this.updateMissions()
+                })
+                .catch(error => console.error('Unable to update item.', error));
+
+            this.setState({
+                isEditing: false,
+                buttonText: 'Edit'
+            })
+        } else {
+            this.setState({
+                isEditing: true,
+                buttonText: 'Save'
+            })
+        }
+
+        event.preventDefault()
+    }
+
+    handleDelete(event) {
+        console.log(`Delete Mission, id: ${this.props.id}`)
+
+        fetch(`${missionUri}/${this.props.id}`, {
+            method: 'DELETE'
+        })
+            .then(() => this.updateMissions())
+            .catch(error => console.error('Unable to delete item.', error));
+        event.preventDefault()
+    }
+
+    handleCancel(event) {
+        this.initialState()
+        event.preventDefault()
+    }
+
+    render() {
+        if (this.state.isEditing) {
+            return (
+                <>
+                    <td>{this.props.id}</td>
+                    <td><input type="text" value={this.state.name} onChange={this.handleNameChange} /></td>
+                    <td><input type="text" value={this.state.skillCost} onChange={this.handleSkillCostChange} /></td>
+                    <td><input type="text" value={this.state.reward} onChange={this.handleRewardChange} /></td>
+                    <td><input type="text" value={this.state.durationMs} onChange={this.handleDurationMsChange} /></td>
+                    <td><input type="text" value={this.state.playerLevelVisible} onChange={this.handlePlayerLevelVisibleChange} /></td>
+                    <td><button onClick={(e) => this.handleCancel(e)}>Cancel</button></td>
+                    <td><button onClick={(e) => this.handleEditSaveButtonClick(e)}>{this.state.buttonText}</button></td>
+                    <td><button onClick={(e) => this.handleDelete(e)}>Delete</button></td>
+                </>
+            )
+        } else {
+            return (
+                <>
+                    <td>{this.props.id}</td>
+                    <td>{this.state.name}</td>
+                    <td>{this.state.skillCost} skill</td>
+                    <td>{this.state.reward} coins</td>
+                    <td>{this.state.durationMs} ms</td>
+                    <td>{this.state.playerLevelVisible}</td>
+                    <td><button onClick={(e) => this.handleEditSaveButtonClick(e)}>{this.state.buttonText}</button></td>
+                    <td><button onClick={(e) => this.handleDelete(e)}>Delete</button></td>
+                </>
+            )
+        }
     }
 }
 
@@ -472,36 +716,22 @@ class PlayerControl extends React.Component {
 }
 
 class ExistingPlayers extends React.Component {
-    constructor(props) {
-        super(props)
-
-        this.handleDelete = this.handleDelete.bind(this)
-    }
 
     updatePlayers() {
         this.props.updatePlayers()
     }
 
-    handleDelete(id, event) {
-        console.log(`Delete Player, Id: ${id}`)
-
-        fetch(`${playerUri}/${id}`, {
-            method: 'DELETE'
-        })
-            .then(() => this.updatePlayers())
-            .catch(error => console.error('Unable to delete item.', error));
-        event.preventDefault()
-    }
-
     render() {
         const playersItems = this.props.players.map((player) =>
             <tr key={player.id}>
-                <td>{player.id}</td>
-                <td>{player.name}</td>
-                <td>{player.level}</td>
-                <td>{player.coin} coins</td>
-                <td>{player.missionsSinceUpgrade}/5</td>
-                <td><button onClick={(e) => this.handleDelete(player.id, e)}>Delete</button></td>
+                <ExistingPlayerRow
+                    id={player.id}
+                    name={player.name}
+                    level={player.level}
+                    coin={player.coin}
+                    missionsSinceUpgrade={player.missionsSinceUpgrade}
+                    updatePlayers={this.props.updatePlayers}
+                />
             </tr>
         );
 
@@ -525,6 +755,142 @@ class ExistingPlayers extends React.Component {
             </div>
         )
         
+    }
+}
+
+class ExistingPlayerRow extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            isEditing: false,
+            buttonText: 'Edit',
+            name: this.props.name,
+            level: this.props.level,
+            coin: this.props.coin,
+            missionsSinceUpgrade: this.props.missionsSinceUpgrade
+        }
+
+        this.handleEditSaveButtonClick = this.handleEditSaveButtonClick.bind(this)
+        this.handleDelete = this.handleDelete.bind(this)
+        this.handleNameChange = this.handleNameChange.bind(this)
+        this.handleLevelChange = this.handleLevelChange.bind(this)
+        this.handleCoinChange = this.handleCoinChange.bind(this)
+        this.handleMissionsSinceUpgradeChange = this.handleMissionsSinceUpgradeChange.bind(this)
+    }
+
+    initialState() {
+        this.setState({
+            isEditing: false,
+            buttonText: 'Edit',
+            name: this.props.name,
+            level: this.props.level,
+            coin: this.props.coin,
+            missionsSinceUpgrade: this.props.missionsSinceUpgrade
+        })
+    }
+
+    updatePlayers() {
+        this.props.updatePlayers()
+    }
+
+    handleNameChange(event) {
+        this.setState({ name: event.target.value })
+    }
+
+    handleLevelChange(event) {
+        this.setState({ level: event.target.value })
+    }
+
+    handleCoinChange(event) {
+        this.setState({ coin: event.target.value })
+    }
+
+    handleMissionsSinceUpgradeChange() {
+        this.setState({ missionsSinceUpgrade: event.target.value })
+    }
+
+    handleEditSaveButtonClick(event) {
+        if (this.state.isEditing) {
+            const player = {
+                id: this.props.id,
+                name: this.state.name,
+                level: parseInt(this.state.level, 10),
+                coin: parseInt(this.state.coin, 10),
+                missionsSinceUpgrade: parseInt(this.state.missionsSinceUpgrade, 10)
+            }
+
+            fetch(`${playerUri}/${player.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(player)
+            })
+                .then(() => {
+                    console.log(`${player.name} updated`)
+                    this.updatePlayers()
+                })
+                .catch(error => console.error('Unable to update item.', error));
+
+            this.setState({
+                isEditing: false,
+                buttonText: 'Edit'
+            })
+        } else {
+            this.setState({
+                isEditing: true,
+                buttonText: 'Save'
+            })
+        }
+
+        event.preventDefault()
+    }
+
+    handleDelete(event) {
+        console.log(`Delete Player, id: ${this.props.id}`)
+
+        fetch(`${playerUri}/${this.props.id}`, {
+            method: 'DELETE'
+        })
+            .then(() => this.updatePlayers())
+            .catch(error => console.error('Unable to delete item.', error));
+        event.preventDefault()
+    }
+
+    handleCancel(event) {
+        this.initialState()
+        event.preventDefault()
+    }
+
+    render() {
+        if (this.state.isEditing) {
+            return (
+                <>
+                    <td>{this.props.id}</td>
+                    <td><input type="text" value={this.state.name} onChange={this.handleNameChange} /></td>
+                    <td><input type="text" value={this.state.level} onChange={this.handleLevelChange} /></td>
+                    <td><input type="text" value={this.state.coin} onChange={this.handleCoinChange} /></td>
+                    <td><input type="text" value={this.state.missionsSinceUpgrade} onChange={this.handleMissionsSinceUpgradeChange} /></td>
+                    <td><button onClick={(e) => this.handleCancel(e)}>Cancel</button></td>
+                    <td><button onClick={(e) => this.handleEditSaveButtonClick(e)}>{this.state.buttonText}</button></td>
+                    <td><button onClick={(e) => this.handleDelete(e)}>Delete</button></td>
+                </>
+            )
+        } else {
+            return (
+                <>
+                    <td>{this.props.id}</td>
+                    <td>{this.state.name}</td>
+                    <td>{this.state.level}</td>
+                    <td>{this.state.coin} coins</td>
+                    <td>{this.state.missionsSinceUpgrade}/5</td>
+                    <td><button onClick={(e) => this.handleEditSaveButtonClick(e)}>{this.state.buttonText}</button></td>
+                    <td><button onClick={(e) => this.handleDelete(e)}>Delete</button></td>
+                </>
+            )
+        }
     }
 }
 

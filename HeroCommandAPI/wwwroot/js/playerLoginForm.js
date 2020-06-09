@@ -9,11 +9,7 @@ class PlayerLogin extends React.Component{
             players: []
         }
 
-        this.playerAdded = this.playerAdded.bind(this)
-    }
-
-    playerAdded() {
-        this.refreshPlayers()
+        this.refreshPlayers = this.refreshPlayers.bind(this)
     }
 
     componentDidMount() {
@@ -49,7 +45,7 @@ class PlayerLogin extends React.Component{
         } else {
             return (
                 <div>
-                    <CreatePlayer name="Player Name" playerAdded={this.playerAdded}/>
+                    <CreatePlayer name="Player Name" playerAdded={this.refreshPlayers}/>
                     <br />
                     <ExistingPlayers players={players} />                    
                 </div>

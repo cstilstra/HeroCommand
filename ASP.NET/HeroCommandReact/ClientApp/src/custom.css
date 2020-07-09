@@ -1,0 +1,28 @@
+/* Provide sufficient contrast against white background */
+a {
+  color: #0366d6;
+}
+
+code {
+  color: #E01A76;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+input[type="submit" i], button {
+    color: #212529;
+    background-color: rgb(239,239,239);
+    border-color: rgb(118,118,118);
+}
+
+.panel {
+    background-color: lightgray;
+}
+
+h4 {
+    margin: 0;
+}

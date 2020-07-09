@@ -1,4 +1,5 @@
 ﻿import React, { Component } from 'react';
+import { CreatePlayer } from './CreatePlayer';
 
 const heroUri = 'api/Heroes'
 const missionUri = 'api/Missions';
@@ -8,6 +9,8 @@ export class AdminControl extends Component {
     render() {
         return (
             <div>
+                <h4>Admin Controls</h4>
+                <br />
                 <HeroControl />
                 <br />
                 <MissionControl />
@@ -723,10 +726,7 @@ class PlayerControl extends Component {
             <div className="panel">
                 <h4>Players</h4>
                 <br />
-                <CreatePlayer name="Player Name"
-                    level="1"
-                    coin="0"
-                    missionsSinceUpgrade="0"
+                <CreatePlayer isAdmin={true}
                     updatePlayers={this.updatePlayers} />
                 <br />
                 <ExistingPlayers players={this.state.players}
@@ -914,99 +914,3 @@ class ExistingPlayerRow extends Component {
         }
     }
 }
-
-class CreatePlayer extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            name: props.name,
-            level: props.level,
-            coin: props.coin,
-            missionsSinceUpgrade: props.missionsSinceUpgrade
-        }
-
-        this.handleSubmit = this.handleSubmit.bind(this)
-        this.handleNameChange = this.handleNameChange.bind(this)
-        this.handleLevelChange = this.handleLevelChange.bind(this)
-        this.handleCoinChange = this.handleCoinChange.bind(this)
-        this.handleMissionsSinceUpgradeChange = this.handleMissionsSinceUpgradeChange.bind(this)
-    }
-
-    updatePlayers() {
-        this.props.updatePlayers()
-    }
-
-    handleNameChange(event) {
-        this.setState({ name: event.target.value })
-    }
-
-    handleLevelChange(event) {
-        this.setState({ level: event.target.value })
-    }
-
-    handleCoinChange(event) {
-        this.setState({ coin: event.target.value })
-    }
-
-    handleMissionsSinceUpgradeChange(event) {
-        this.setState({ missionsSinceUpgrade: event.target.value })
-    }
-
-    handleSubmit(event) {
-        const player = {
-            name: this.state.name,
-            level: parseInt(this.state.level, 10),
-            coin: parseInt(this.state.coin, 10),
-            missionsSinceUpgrade: parseInt(this.state.missionsSinceUpgrade, 10)
-        };
-
-        fetch(playerUri, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(player)
-        })
-            .then(response => response.json())
-            .then(() => {
-                this.setState({
-                    name: this.props.name,
-                    level: this.props.level,
-                    coin: this.props.coin,
-                    missionsSinceUpgrade: this.props.missionsSinceUpgrade
-                })
-                console.log(`${player.name} created`)
-                this.updatePlayers()
-            })
-            .catch(error => console.error('Unable to add item.', error));
-
-        event.preventDefault()
-    }
-
-    render() {
-        return (
-            <div>
-                <h4>New Player</h4>
-                <form onSubmit={this.handleSubmit}>
-                    <label>Name</label>
-                    <input type="text" value={this.state.name} onChange={this.handleNameChange} />
-                    <br />
-                    <label>Level</label>
-                    <input type="text" value={this.state.level} onChange={this.handleLevelChange} />
-                    <br />
-                    <label>Coin</label>
-                    <input type="text" value={this.state.coin} onChange={this.handleCoinChange} />
-                    <br />
-                    <label>Missions Since Upgrade</label>
-                    <input type="text" value={this.state.missionsSinceUpgrade} onChange={this.handleMissionsSinceUpgradeChange} />
-                    <br />
-                    <input type="submit" value="Create player" />
-                </form>
-            </div>
-        )
-    }
-}
-
-//const domContainer = document.querySelector('#admin_control_form');
-//ReactDOM.render(React.createElement(AdminControl), domContainer);

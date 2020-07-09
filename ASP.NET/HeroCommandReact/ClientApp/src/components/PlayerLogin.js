@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { Redirect } from 'react-router';
+import { CreatePlayer } from './CreatePlayer';
 
 const playerUri = 'api/Players'
 
@@ -48,8 +49,8 @@ export class PlayerLogin extends Component{
         } else {
             return (
                 <div>
-                    <CreatePlayer name="Player Name"
-                        playerAdded={this.refreshPlayers} />
+                    <CreatePlayer isAdmin={false}
+                        updatePlayers={this.refreshPlayers} />
                     <br />
                     <ExistingPlayers players={players} />                    
                 </div>
@@ -77,7 +78,7 @@ class ExistingPlayers extends Component {
 
     render() {
         if (this.state.toGameplay === true) {
-            return <Redirect to='/gameplay' />
+            return <Redirect to='/gameplay' push='true' />
         } else {
 
 
@@ -106,65 +107,3 @@ class ExistingPlayers extends Component {
         }
     }
 }
-
-class CreatePlayer extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            name: props.name
-        }
-
-        this.handleSubmit = this.handleSubmit.bind(this)
-        this.handleChange = this.handleChange.bind(this)
-    }
-
-    playerAdded() {
-        this.props.playerAdded()
-    }
-
-    handleChange(event) {
-        this.setState({ name: event.target.value })
-    }
-
-    handleSubmit(event) {
-        const player = {
-            name: this.state.name,
-            level: 1,
-            coin: 0,
-            missionsSinceUpgrade: 0
-        };
-
-        fetch(playerUri, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(player)
-        })
-            .then(response => response.json())
-            .then(() => {
-                this.setState({name: 'Player Name'})
-                console.log(`${player.name} created`)
-                this.playerAdded()
-            })
-            .catch(error => console.error('Unable to add item.', error));
-
-        event.preventDefault()
-    }
-
-    render() {
-        return (
-            <div className="panel">
-                <h4>New Player</h4>
-                <form onSubmit={this.handleSubmit}>
-                    <input type="text" value={this.state.name} onChange={this.handleChange} />
-                    <input type="submit" value="Create player"/>
-                </form>
-            </div>
-        )
-    }
-}
-
-//const domContainer = document.querySelector('#player_login_form');
-//ReactDOM.render(React.createElement(PlayerLogin), domContainer);

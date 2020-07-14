@@ -1,4 +1,5 @@
-﻿import React, { Component } from 'react';
+﻿import React, { Component } from 'react'
+import { AvailableMissions } from './AvailableMissions'
 
 const playerUri = 'api/Players'
 const heroUri = 'api/Heroes'
@@ -278,95 +279,95 @@ class AvailableHeroRow extends Component {
     }
 }
 
-class AvailableMissions extends React.Component {
-    constructor(props) {
-        super(props)
+//class AvailableMissions extends React.Component {
+//    constructor(props) {
+//        super(props)
 
-        this.state = {
-            player: this.props.player,
-            assignHeroesClicked: this.props.assignHeroesClicked,
-            missions: []
-        }
-    }
+//        this.state = {
+//            player: this.props.player,
+//            assignHeroesClicked: this.props.assignHeroesClicked,
+//            missions: []
+//        }
+//    }
 
-    componentDidMount() {
-        this.refreshMissions()
-    }
+//    componentDidMount() {
+//        this.refreshMissions()
+//    }
 
-    refreshMissions() {
-        fetch(`${missionUri}/visibleByLevel/${this.state.player.level}`)
-            .then(res => res.json())
-            .then(
-                (data) => {
-                    this.handleMissionsData(data)
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    this.setState({
-                        error
-                    });
-                })
-    }
+//    refreshMissions() {
+//        fetch(`${missionUri}/visibleByLevel/${this.state.player.level}`)
+//            .then(res => res.json())
+//            .then(
+//                (data) => {
+//                    this.handleMissionsData(data)
+//                },
+//                // Note: it's important to handle errors here
+//                // instead of a catch() block so that we don't swallow
+//                // exceptions from actual bugs in components.
+//                (error) => {
+//                    this.setState({
+//                        error
+//                    });
+//                })
+//    }
 
-    handleMissionsData(data) {
-        let missions = data
-        missions.forEach((mission) => {
-            fetch(`${missionUri}/tryEndMission/${mission.id}?playerId=${this.state.player.id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(res => res.json())
-                .then(res => this.handleMissionUnderway(mission, res))
-        })
-        this.setState({
-            missions: missions
-        })
-    }
+//    handleMissionsData(data) {
+//        let missions = data
+//        missions.forEach((mission) => {
+//            fetch(`${missionUri}/tryEndMission/${mission.id}?playerId=${this.state.player.id}`, {
+//                method: 'DELETE',
+//                headers: {
+//                    'Accept': 'application/json',
+//                    'Content-Type': 'application/json'
+//                }
+//            })
+//                .then(res => res.json())
+//                .then(res => this.handleMissionUnderway(mission, res))
+//        })
+//        this.setState({
+//            missions: missions
+//        })
+//    }
 
-    handleMissionUnderway(mission, res) {
-        console.log(`${mission.name}: ${res}`)
-        mission.response = res
-    }
+//    handleMissionUnderway(mission, res) {
+//        console.log(`${mission.name}: ${res}`)
+//        mission.response = res
+//    }
 
-    handleAssignHeroes(mission, event) {
-        this.state.assignHeroesClicked(mission)
-        event.preventDefault()
-    }
+//    handleAssignHeroes(mission, event) {
+//        this.state.assignHeroesClicked(mission)
+//        event.preventDefault()
+//    }
 
-    render() {
-        const missionsItems = this.state.missions.map((mission) =>
-            <tr key={mission.id}>
-                <td>{mission.name}</td>
-                <td>{mission.skillCost} skill required</td>
-                <td>{mission.reward} coins for completion</td>
-                <td><button onClick={(e) => this.handleAssignHeroes(mission, e)}>Assign Heroes</button></td>
-                <td>{mission.response}</td>
-            </tr>
-        )
+//    render() {
+//        const missionsItems = this.state.missions.map((mission) =>
+//            <tr key={mission.id}>
+//                <td>{mission.name}</td>
+//                <td>{mission.skillCost} skill required</td>
+//                <td>{mission.reward} coins for completion</td>
+//                <td><button onClick={(e) => this.handleAssignHeroes(mission, e)}>Assign Heroes</button></td>
+//                <td>{mission.response}</td>
+//            </tr>
+//        )
 
-        return (
-            <div className="panel" >
-                <b>Missions Available</b>
-                <br />
-                <table>
-                    <tbody id="existing_missions">
-                        <tr>
-                            <th>Name</th>
-                            <th>Skill Requirement</th>
-                            <th>Reward</th>
-                        </tr>
-                        {missionsItems.length > 0 ? missionsItems : <tr><td>Searching for missions...</td></tr>}
-                    </tbody>
-                </table>
-            </div>
-        )
-    }
-}
+//        return (
+//            <div className="panel" >
+//                <b>Missions Available</b>
+//                <br />
+//                <table>
+//                    <tbody id="existing_missions">
+//                        <tr>
+//                            <th>Name</th>
+//                            <th>Skill Requirement</th>
+//                            <th>Reward</th>
+//                        </tr>
+//                        {missionsItems.length > 0 ? missionsItems : <tr><td>Searching for missions...</td></tr>}
+//                    </tbody>
+//                </table>
+//            </div>
+//        )
+//    }
+//}
 
 class SelectedMission extends Component {
     constructor(props) {

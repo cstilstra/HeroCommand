@@ -1,6 +1,6 @@
-﻿import React, { Component } from 'react';
-import { Redirect } from 'react-router';
-import { CreatePlayer } from './CreatePlayer';
+﻿import React, { Component } from 'react'
+import { Redirect } from 'react-router'
+import { CreatePlayer } from './CreatePlayer'
 
 const playerUri = 'api/Players'
 
@@ -78,7 +78,7 @@ class ExistingPlayers extends Component {
 
     render() {
         if (this.state.toGameplay === true) {
-            return <Redirect to='/gameplay' push='true' />
+            return <Redirect to='/gameplay' push={true} />
         } else {
 
 

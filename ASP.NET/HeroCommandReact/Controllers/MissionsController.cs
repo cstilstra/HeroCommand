@@ -154,10 +154,14 @@ namespace HeroCommandReact.Controllers
             }
             else
             {
-                //calculate time until finish
-                string timeTilFinish = (finishedAt - DateTime.Now).ToString();
+                ////calculate time until finish
+                //TimeSpan timeTilFinish = (finishedAt - DateTime.Now);
+                //string timeTilFinishInSeconds = timeTilFinish.TotalSeconds.ToString();
 
-                return $"{timeTilFinish} until mission complete";
+                //return timeTilFinishInSeconds;
+
+                // TODO: return finishedAt instead, so that client can calculate time until finish
+                return finishedAt.ToString();
             }
         }
 

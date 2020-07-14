@@ -24,7 +24,7 @@ export class Home extends Component {
         </ul>
         <p>
             Hero Command <strong>is not</strong> meant to be a fully-realized, playable game. 
-            Rather it has been designed as a technical demo to show off its creator's skills.
+            Rather it has been designed as a technical demo to showcase its creator's abilities.
             If you would like to take a look at the source code for Hero Command, please feel free to visit over on <a href='https://github.com/cstilstra/HeroCommand'>Github</a>.
         </p>
       </div>

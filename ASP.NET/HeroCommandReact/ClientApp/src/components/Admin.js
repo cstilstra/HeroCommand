@@ -1,8 +1,8 @@
-﻿import React, { Component } from 'react';
-import { CreatePlayer } from './CreatePlayer';
+﻿import React, { Component } from 'react'
+import { CreatePlayer } from './CreatePlayer'
 
 const heroUri = 'api/Heroes'
-const missionUri = 'api/Missions';
+const missionUri = 'api/Missions'
 const playerUri = 'api/Players' 
 
 export class AdminControl extends Component {

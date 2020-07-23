@@ -1,6 +1,8 @@
 ﻿import React, { Component } from 'react'
 
 const missionUri = 'api/Missions'
+const missionComplete = 'Mission complete'
+const missionNotUnderway = 'Mission not underway'
 
 export class AvailableMissions extends Component {
     constructor(props) {
@@ -9,7 +11,8 @@ export class AvailableMissions extends Component {
         this.state = {
             player: this.props.player,
             assignHeroesClicked: this.props.assignHeroesClicked,
-            missions: []
+            missions: [],
+            missionCompleteCallback: this.props.missionCompleteCallback
         }
     }
 
@@ -36,7 +39,11 @@ export class AvailableMissions extends Component {
     render() {
         const missionsItems = this.state.missions.map((mission) =>
             <tr key={mission.id}>
-                <AvailableMission mission={mission} player={this.state.player} assignHeroesClicked={this.state.assignHeroesClicked} />
+                <AvailableMission
+                    mission={mission}
+                    player={this.state.player}
+                    assignHeroesClicked={this.state.assignHeroesClicked}
+                    missionCompleteCallback={this.state.missionCompleteCallback} />
             </tr>
         )
 
@@ -67,7 +74,10 @@ class AvailableMission extends Component {
             mission: this.props.mission,
             player: this.props.player,
             assignHeroesClicked: this.props.assignHeroesClicked,
+            missionCompleteCallback: this.props.missionCompleteCallback
         }
+
+        this.updateMissionStatus = this.updateMissionStatus.bind(this)
     }
 
     componentDidMount() {
@@ -87,11 +97,12 @@ class AvailableMission extends Component {
     }
 
     handleMissionUnderway(mission, res) {
-        // try to convert res to date
-        var finishesAt = new Date(res)
-
+        if (res === missionComplete) {
+            res = missionNotUnderway
+            this.state.missionCompleteCallback()
+        }
         mission.response = res
-        this.setState({ mission: mission})
+        this.setState({ mission: mission })
     }
 
     handleAssignHeroes(mission, event) {
@@ -100,13 +111,19 @@ class AvailableMission extends Component {
     }
 
     render() {
+        var statusBlock = <td></td>
+        if (this.state.mission.response === missionNotUnderway) {
+            statusBlock = <td><button onClick={(e) => this.handleAssignHeroes(this.state.mission, e)}>Assign Heroes</button></td>
+        } else {
+            statusBlock = <td><CountdownTimer endTime={this.state.mission.response} timeUpCallback={this.updateMissionStatus} /></td>
+        }
+
         return (
             <>
                 <td>{this.state.mission.name}</td>
                 <td>{this.state.mission.skillCost} skill required</td>
                 <td>{this.state.mission.reward} coins for completion</td>
-                <td><button onClick={(e) => this.handleAssignHeroes(this.state.mission, e)}>Assign Heroes</button></td>
-                <td><CountdownTimer endTime={this.state.mission.response} /></td>
+                {statusBlock}
             </>
         )
     }
@@ -115,16 +132,20 @@ class AvailableMission extends Component {
 function CountdownTimer(props) {
     const calculateTimeLeft = () => {
         const difference = new Date(props.endTime) - new Date();
-        let timeLeft = Math.floor(difference / 1000)
+        let timeLeft = Math.floor(difference / 1000)        
         return timeLeft;
     };
 
     const [timeLeft, setTimeLeft] = React.useState(calculateTimeLeft());
 
     React.useEffect(() => {
-        setTimeout(() => {
-            setTimeLeft(calculateTimeLeft());
+        const timer = setTimeout(() => {
+            let timeLeft = calculateTimeLeft()
+            if (timeLeft < 0) props.timeUpCallback()
+            else setTimeLeft(calculateTimeLeft());
         }, 1000);
+        // the returned function will be called when the component unmounts
+        return () => clearTimeout(timer)
     });
 
     if (isNaN(timeLeft)) {

@@ -13,6 +13,8 @@ export class Gameplay extends Component {
             playerId: sessionStorage.getItem('playerId'),
             isLoaded: false,
             isMissionSelected: false,
+            heroes: [],
+            heroesToPlayer: [],
             assignedHeroes: [],
             player: null,
             selectedMission: null
@@ -22,33 +24,69 @@ export class Gameplay extends Component {
         this.handleAssignHero = this.handleAssignHero.bind(this)
         this.handleRemoveHero = this.handleRemoveHero.bind(this)
         this.handleDoneAssignHeroes = this.handleDoneAssignHeroes.bind(this)
+        this.refresh = this.refresh.bind(this)
     }
 
     componentDidMount() {
-        this.refreshPlayer()
+        this.refresh()
     }
 
-    refreshPlayer() {
+    async refresh() {
+        await this.refreshPlayer()
+        await this.refreshHeroes()
+        this.setState({
+            isLoaded: true
+        })
+    }
+
+    async refreshPlayer() {
         this.setState({ isLoaded: false })
-        fetch(`${playerUri}/${this.state.playerId}`, {
+        await fetch(`${playerUri}/${this.state.playerId}`, {
             method: 'GET'
         })
             .then(res => res.json())
             .then(
                 (data) => {
                     this.setState({
-                        player: data,
-                        isLoaded: true
+                        player: data
                     })
                 },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
                 (error) => {
                     this.setState({
                         error
                     });
                 })
+    }
+
+    async refreshHeroes() {
+        await fetch(`${heroUri}/toPlayer/${this.state.player.id}`)
+            .then(res => res.json())
+            .then(
+                (data) => {
+                    this.setState({
+                        heroesToPlayer: data
+                    })
+                },
+                (error) => {
+                    this.setState({
+                        error
+                    });
+                })
+            .then(() => {
+                fetch(`${heroUri}/visibleByLevel/${this.state.player.level}`)
+                    .then(res => res.json())
+                    .then(
+                        (data) => {
+                            this.setState({
+                                heroes: data
+                            })
+                        },
+                        (error) => {
+                            this.setState({
+                                error
+                            });
+                        })
+            })
     }
 
     handleAssignHeroes(mission) {
@@ -100,7 +138,9 @@ export class Gameplay extends Component {
                         <AvailableHeroes player={this.state.player}
                             isAssignHeroes={true}
                             assignedHeroes={this.state.assignedHeroes}
-                            assignHeroClicked={this.handleAssignHero} />
+                            assignHeroClicked={this.handleAssignHero}
+                            heroes={this.state.heroes}
+                            heroesToPlayer={this.state.heroesToPlayer} />
                         <br />
                         <SelectedMission player={this.state.player}
                             selectedMission={this.state.selectedMission}
@@ -115,12 +155,15 @@ export class Gameplay extends Component {
                         <CurrentPlayer player={this.state.player} />
                         <br />
                         <AvailableMissions player={this.state.player}
-                            assignHeroesClicked={this.handleAssignHeroes} />
+                            assignHeroesClicked={this.handleAssignHeroes}
+                            missionCompleteCallback={this.refresh}/>
                         <br />
                         <AvailableHeroes player={this.state.player}
                             isAssignHeroes={false}
                             assignedHeroes={this.state.assignedHeroes}
-                            assignHeroClicked={this.handleAssignHero} />
+                            assignHeroClicked={this.handleAssignHero}
+                            heroes={this.state.heroes}
+                            heroesToPlayer={this.state.heroesToPlayer} />
                     </div>
                 )
             }
@@ -151,69 +194,19 @@ class CurrentPlayer extends Component {
 }
 
 class AvailableHeroes extends Component {
-    constructor(props) {
-        super(props)
-
-        this.state = {
-            player: this.props.player,
-            isAssignHeroes: this.props.isAssignHeroes,
-            assignHeroClicked: this.props.assignHeroClicked,
-            assignedHeroes: this.props.assignedHeroes,
-            heroesToPlayer: [],
-            heroes: []
-        }
-    }
-
-    componentDidMount() {
-        this.refreshHeroes()
-    }
-
-    refreshHeroes() {
-        fetch(`${heroUri}/toPlayer/${this.state.player.id}`)
-            .then(res => res.json())
-            .then(
-                (data) => {
-                    this.setState({
-                        heroesToPlayer: data
-                    })
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    this.setState({
-                        error
-                    });
-                })
-            .then(() => {
-                fetch(`${heroUri}/visibleByLevel/${this.state.player.level}`)
-                    .then(res => res.json())
-                    .then(
-                        (data) => {
-                            this.setState({
-                                heroes: data
-                            })
-                        },
-                        // Note: it's important to handle errors here
-                        // instead of a catch() block so that we don't swallow
-                        // exceptions from actual bugs in components.
-                        (error) => {
-                            this.setState({
-                                error
-                            });
-                        })
-            })
-    }
 
     render() {
-        const heroesItems = this.state.heroes.map((hero) => 
-            <tr key={hero.id}>
-                <AvailableHeroRow hero={hero}
-                    heroesToPlayer={this.state.heroesToPlayer}
-                    isAssigning={this.state.isAssignHeroes}
-                    assignHeroClicked={this.state.assignHeroClicked} />
-            </tr>
-        )
+        var heroesItems = []
+        if (this.props.heroes !== undefined) {
+            heroesItems = this.props.heroes.map((hero) =>
+                <tr key={hero.id}>
+                    <AvailableHeroRow hero={hero}
+                        heroesToPlayer={this.props.heroesToPlayer}
+                        isAssigning={this.props.isAssignHeroes}
+                        assignHeroClicked={this.props.assignHeroClicked} />
+                </tr>
+            )
+        }
 
         return (
             <div className = "panel" >
@@ -279,96 +272,6 @@ class AvailableHeroRow extends Component {
     }
 }
 
-//class AvailableMissions extends React.Component {
-//    constructor(props) {
-//        super(props)
-
-//        this.state = {
-//            player: this.props.player,
-//            assignHeroesClicked: this.props.assignHeroesClicked,
-//            missions: []
-//        }
-//    }
-
-//    componentDidMount() {
-//        this.refreshMissions()
-//    }
-
-//    refreshMissions() {
-//        fetch(`${missionUri}/visibleByLevel/${this.state.player.level}`)
-//            .then(res => res.json())
-//            .then(
-//                (data) => {
-//                    this.handleMissionsData(data)
-//                },
-//                // Note: it's important to handle errors here
-//                // instead of a catch() block so that we don't swallow
-//                // exceptions from actual bugs in components.
-//                (error) => {
-//                    this.setState({
-//                        error
-//                    });
-//                })
-//    }
-
-//    handleMissionsData(data) {
-//        let missions = data
-//        missions.forEach((mission) => {
-//            fetch(`${missionUri}/tryEndMission/${mission.id}?playerId=${this.state.player.id}`, {
-//                method: 'DELETE',
-//                headers: {
-//                    'Accept': 'application/json',
-//                    'Content-Type': 'application/json'
-//                }
-//            })
-//                .then(res => res.json())
-//                .then(res => this.handleMissionUnderway(mission, res))
-//        })
-//        this.setState({
-//            missions: missions
-//        })
-//    }
-
-//    handleMissionUnderway(mission, res) {
-//        console.log(`${mission.name}: ${res}`)
-//        mission.response = res
-//    }
-
-//    handleAssignHeroes(mission, event) {
-//        this.state.assignHeroesClicked(mission)
-//        event.preventDefault()
-//    }
-
-//    render() {
-//        const missionsItems = this.state.missions.map((mission) =>
-//            <tr key={mission.id}>
-//                <td>{mission.name}</td>
-//                <td>{mission.skillCost} skill required</td>
-//                <td>{mission.reward} coins for completion</td>
-//                <td><button onClick={(e) => this.handleAssignHeroes(mission, e)}>Assign Heroes</button></td>
-//                <td>{mission.response}</td>
-//            </tr>
-//        )
-
-//        return (
-//            <div className="panel" >
-//                <b>Missions Available</b>
-//                <br />
-//                <table>
-//                    <tbody id="existing_missions">
-//                        <tr>
-//                            <th>Name</th>
-//                            <th>Skill Requirement</th>
-//                            <th>Reward</th>
-//                        </tr>
-//                        {missionsItems.length > 0 ? missionsItems : <tr><td>Searching for missions...</td></tr>}
-//                    </tbody>
-//                </table>
-//            </div>
-//        )
-//    }
-//}
-
 class SelectedMission extends Component {
     constructor(props) {
         super(props)
@@ -398,10 +301,6 @@ class SelectedMission extends Component {
             heroIds.push(hero.id)
         })
 
-        heroIds.forEach(heroId => 
-                console.log(`heroId: ${heroId}`)
-            )
-
         fetch(`${missionUri}/startMission/${this.state.selectedMission.id}?playerId=${this.state.player.id}`, {
             method: 'POST',
             headers: {
@@ -414,9 +313,6 @@ class SelectedMission extends Component {
             .then(() => {
                     this.state.doneAssignHeroesClicked()
                 },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
                 (error) => {
                     this.setState({
                         error
@@ -461,6 +357,3 @@ class SelectedMission extends Component {
         )
     }
 }
-
-//const domContainer = document.querySelector('#main_play_form');
-//ReactDOM.render(React.createElement(Gameplay), domContainer);

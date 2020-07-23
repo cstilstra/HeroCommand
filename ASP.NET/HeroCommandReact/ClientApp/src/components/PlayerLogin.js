@@ -68,7 +68,6 @@ class ExistingPlayers extends Component {
     }
 
     setPlayerIdToSessionData(playerId) {
-        console.log(`you've chosen player id: ${playerId}`)
         sessionStorage.setItem("playerId", playerId)
         this.setState({
             toGameplay: true

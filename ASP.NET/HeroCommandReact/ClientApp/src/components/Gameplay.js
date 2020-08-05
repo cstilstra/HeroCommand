@@ -336,6 +336,17 @@ class SelectedMission extends Component {
             </tr>
         )
 
+        let beginMissionButton = null
+        if (currentSkill >= this.state.selectedMission.skillCost) {
+            beginMissionButton =
+                <>
+                    < br />
+                    <button onClick={(e) => this.handleBeginMissionClick(e)}>Begin Mission</button>
+                </>
+        } else {
+            beginMissionButton = <></>
+        }
+
         return (
             <div className="panel">
                 <b>Mission: {this.state.selectedMission.name}</b>
@@ -349,8 +360,7 @@ class SelectedMission extends Component {
                         {assignedHeroesItems.length > 0 ? assignedHeroesItems : <tr><td>Waiting for heroes to be assigned...</td></tr>}
                     </tbody>
                 </table>
-                <br />
-                <button onClick={(e) => this.handleBeginMissionClick(e)}>Begin Mission</button>
+                {beginMissionButton}
                 <br />
                 <button onClick={(e) => this.handleCancelClick(e)}>Cancel</button>
             </div>

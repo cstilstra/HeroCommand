@@ -48,13 +48,13 @@ namespace HeroCommandReact.Controllers
         }
 
         // GET: api/Heroes/OnMission/1?playerId=1
-        [HttpGet("OnMission/{id}")]
-        public async Task<ActionResult<IEnumerable<Hero>>> GetHeroesOnMission(int id, int playerId)
+        [HttpGet("OnMission/{missionId}")]
+        public async Task<ActionResult<IEnumerable<Hero>>> GetHeroesOnMission(int missionId, int playerId)
         {
             List<Hero> heroes = new List<Hero>();
             if (playerId == 0) return heroes;
 
-            List<HeroToMission> heroesToMission = await _context.Heroes_to_missions.Where(entry => entry.MissionId == id && entry.PlayerId == playerId).ToListAsync();
+            List<HeroToMission> heroesToMission = await _context.Heroes_to_missions.Where(entry => entry.MissionId == missionId && entry.PlayerId == playerId).ToListAsync();
 
             foreach (HeroToMission link in heroesToMission)
             {
@@ -63,7 +63,7 @@ namespace HeroCommandReact.Controllers
             }
 
             return heroes;
-        }
+        }        
 
         // GET: api/Heroes/ToPlayer/1
         [HttpGet("ToPlayer/{playerId}")]

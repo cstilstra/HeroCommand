@@ -50,6 +50,22 @@ namespace HeroCommandReact.Controllers
             return await _context.Missions.Where(mission => mission.PlayerLevelVisible <= playerLevel).ToListAsync();
         }
 
+        //GET: api/Missions/ByHero/1?playerId=1
+        [HttpGet("ByHero/{heroId}")]
+        public async Task<ActionResult<Mission>> MissionByHero(int heroId, int playerId)
+        {
+            List<HeroToMission> heroesToMission = await _context.Heroes_to_missions.Where(entry => entry.HeroId == heroId && entry.PlayerId == playerId).ToListAsync();
+
+            if (heroesToMission.Count != 0)
+            {
+                Mission mission = await _context.Missions.FindAsync(heroesToMission[0].MissionId);
+                if (mission != null) return mission;
+            }
+
+            //return new Mission { Id = -1 };
+            return null;
+        }
+
         // PUT: api/Missions/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.

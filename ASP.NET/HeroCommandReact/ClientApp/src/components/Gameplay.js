@@ -201,6 +201,7 @@ class AvailableHeroes extends Component {
             heroesItems = this.props.heroes.map((hero) =>
                 <tr key={hero.id}>
                     <AvailableHeroRow hero={hero}
+                        player={this.props.player}
                         heroesToPlayer={this.props.heroesToPlayer}
                         isAssigning={this.props.isAssignHeroes}
                         assignHeroClicked={this.props.assignHeroClicked} />
@@ -233,10 +234,32 @@ class AvailableHeroRow extends Component {
 
         this.state = {
             hero: this.props.hero,
+            player: this.props.player,
             heroesToPlayer: this.props.heroesToPlayer,
             isAssigning: this.props.isAssigning,
             assignHeroClicked: this.props.assignHeroClicked,
+            mission: null
         }
+    }
+
+    componentDidMount() {
+        this.checkIfHeroOnMission();
+    }
+
+    checkIfHeroOnMission() {
+        fetch(`${missionUri}/byHero/${this.state.hero.id}?playerId=${this.state.player.id}`)
+            .then(res => res.json())
+            .then(
+                (data) => {
+                    this.setState({
+                        mission: data
+                    })
+                },
+                (error) => {
+                    this.setState({
+                        error
+                    });
+                })
     }
 
     applyAdjustedHeroSkill(hero) {
@@ -251,24 +274,24 @@ class AvailableHeroRow extends Component {
     }
 
     render() {
-        if (this.state.isAssigning) {
-            return (
-                <>
-                    <td>{this.state.hero.name}</td>
-                    <td>{this.applyAdjustedHeroSkill(this.state.hero)}</td>
-                    <td>{this.state.hero.hireCost} coins</td>
-                    <td><button onClick={() => this.state.assignHeroClicked(this.state.hero)}>Assign hero</button></td>
-                </>
-            )
+        let buttonElement = <></>
+
+        if (this.state.mission != null) {
+            buttonElement = <td>Currently on mission: {this.state.mission.name}</td>
         } else {
-            return (
-                <>
-                    <td>{this.state.hero.name}</td>
-                    <td>{this.applyAdjustedHeroSkill(this.state.hero)}</td>
-                    <td>{this.state.hero.hireCost} coins</td>
-                </>
-            )
+            if (this.state.isAssigning) {
+                buttonElement = <td><button onClick={() => this.state.assignHeroClicked(this.state.hero)}>Assign hero</button></td>
+            }
         }
+
+        return (
+            <>
+                <td>{this.state.hero.name}</td>
+                <td>{this.applyAdjustedHeroSkill(this.state.hero)}</td>
+                <td>{this.state.hero.hireCost} coins</td>
+                {buttonElement}
+            </>
+        )
     }
 }
 

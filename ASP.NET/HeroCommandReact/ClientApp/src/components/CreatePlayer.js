@@ -97,7 +97,7 @@ export class CreatePlayer extends Component {
             )
         } else {
             return (
-                <div>
+                <div className="panel box-shadow">
                     <h4>New Player</h4>
                     <form onSubmit={this.handleSubmit}>
                         <label>Name</label>

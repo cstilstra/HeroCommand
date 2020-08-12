@@ -180,7 +180,7 @@ export class Gameplay extends Component {
 class CurrentPlayer extends Component {
     render() {
         return (
-            <div className="panel">
+            <div className="panel box-shadow">
                 <b>{this.props.player.name}</b>
                 <br />
                 Level {this.props.player.level}
@@ -210,7 +210,7 @@ class AvailableHeroes extends Component {
         }
 
         return (
-            <div className = "panel" >
+            <div className="panel box-shadow">
                 <b>Heroes for Hire</b>
                 <br />
                 <table>
@@ -371,7 +371,7 @@ class SelectedMission extends Component {
         }
 
         return (
-            <div className="panel">
+            <div className="panel box-shadow">
                 <b>Mission: {this.state.selectedMission.name}</b>
                 <br /><br />
                 Skill: {currentSkill} / { this.state.selectedMission.skillCost }

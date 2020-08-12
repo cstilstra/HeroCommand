@@ -30,9 +30,6 @@ export class PlayerLogin extends Component{
                         players: data
                     });
                 },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
                 (error) => {
                     this.setState({
                         isLoaded: true,
@@ -92,7 +89,7 @@ class ExistingPlayers extends Component {
             );
 
             return (
-                <div className="panel">
+                <div className="panel box-shadow">
 
                     <h4>Existing Players</h4>
                     <p>{playersItems.length} players found</p>

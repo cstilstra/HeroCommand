@@ -48,7 +48,7 @@ export class AvailableMissions extends Component {
         )
 
         return (
-            <div className="panel" >
+            <div className="panel box-shadow">
                 <b>Missions Available</b>
                 <br />
                 <table>

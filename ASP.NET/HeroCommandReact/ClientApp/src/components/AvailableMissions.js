@@ -9,10 +9,8 @@ export class AvailableMissions extends Component {
         super(props)
 
         this.state = {
-            player: this.props.player,
-            assignHeroesClicked: this.props.assignHeroesClicked,
             missions: [],
-            missionCompleteCallback: this.props.missionCompleteCallback
+            doneTransitioningOut: false
         }
     }
 
@@ -21,7 +19,7 @@ export class AvailableMissions extends Component {
     }
 
     refreshMissions() {
-        fetch(`${missionUri}/visibleByLevel/${this.state.player.level}`)
+        fetch(`${missionUri}/visibleByLevel/${this.props.player.level}`)
             .then(res => res.json())
             .then(
                 (data) => {
@@ -37,32 +35,32 @@ export class AvailableMissions extends Component {
     }
 
     render() {
-        const missionsItems = this.state.missions.map((mission) =>
-            <tr key={mission.id}>
-                <AvailableMission
-                    mission={mission}
-                    player={this.state.player}
-                    assignHeroesClicked={this.state.assignHeroesClicked}
-                    missionCompleteCallback={this.state.missionCompleteCallback} />
-            </tr>
-        )
+            const missionsItems = this.state.missions.map((mission) =>
+                <tr key={mission.id}>
+                    <AvailableMission
+                        mission={mission}
+                        player={this.props.player}
+                        assignHeroesClicked={this.props.assignHeroesClicked}
+                        missionCompleteCallback={this.props.missionCompleteCallback} />
+                </tr>
+            )
 
-        return (
-            <div className="panel box-shadow">
-                <b>Missions Available</b>
-                <br />
-                <table>
-                    <tbody id="existing_missions">
-                        <tr>
-                            <th>Name</th>
-                            <th>Skill Requirement</th>
-                            <th>Reward</th>
-                        </tr>
-                        {missionsItems.length > 0 ? missionsItems : <tr><td>Searching for missions...</td></tr>}
-                    </tbody>
-                </table>
-            </div>
-        )
+            return (
+                <div className={`panel box-shadow fadeIn ${this.props.displayed ? '' : 'fadeOut'}`}>
+                    <b>Missions Available</b>
+                    <br />
+                    <table>
+                        <tbody id="existing_missions">
+                            <tr>
+                                <th>Name</th>
+                                <th>Skill Requirement</th>
+                                <th>Reward</th>
+                            </tr>
+                            {missionsItems.length > 0 ? missionsItems : <tr><td>Searching for missions...</td></tr>}
+                        </tbody>
+                    </table>
+                </div>
+            )
     }
 }
 
@@ -71,10 +69,7 @@ class AvailableMission extends Component {
         super(props)
 
         this.state = {
-            mission: this.props.mission,
-            player: this.props.player,
-            assignHeroesClicked: this.props.assignHeroesClicked,
-            missionCompleteCallback: this.props.missionCompleteCallback
+            mission: this.props.mission
         }
 
         this.updateMissionStatus = this.updateMissionStatus.bind(this)
@@ -85,7 +80,7 @@ class AvailableMission extends Component {
     }
 
     updateMissionStatus() {
-        fetch(`${missionUri}/tryEndMission/${this.state.mission.id}?playerId=${this.state.player.id}`, {
+        fetch(`${missionUri}/tryEndMission/${this.state.mission.id}?playerId=${this.props.player.id}`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
@@ -99,17 +94,18 @@ class AvailableMission extends Component {
     handleMissionUnderway(mission, res) {
         if (res === missionComplete) {
             res = missionNotUnderway
-            this.state.missionCompleteCallback()
+            this.props.missionCompleteCallback()
         }
         mission.response = res
         this.setState({ mission: mission })
     }
 
     handleAssignHeroes(mission, event) {
-        this.state.assignHeroesClicked(mission)
+        this.props.assignHeroesClicked(mission)
         event.preventDefault()
     }
 
+    // todo : refactor so that the CountdownTimer always exists and is shown or not based no state
     render() {
         var statusBlock = <td></td>
         if (this.state.mission.response === missionNotUnderway) {

@@ -130,43 +130,30 @@ export class Gameplay extends Component {
 
     render() {
         if (this.state.isLoaded) { // data loaded
-            if (this.state.isMissionSelected) { // assigning heroes
-                return (
-                    <div>
-                        <CurrentPlayer player={this.state.player} />
-                        <br />
-                        <AvailableHeroes player={this.state.player}
-                            isAssignHeroes={true}
-                            assignedHeroes={this.state.assignedHeroes}
-                            assignHeroClicked={this.handleAssignHero}
-                            heroes={this.state.heroes}
-                            heroesToPlayer={this.state.heroesToPlayer} />
-                        <br />
-                        <SelectedMission player={this.state.player}
-                            selectedMission={this.state.selectedMission}
-                            assignedHeroes={this.state.assignedHeroes}
-                            doneAssignHeroesClicked={this.handleDoneAssignHeroes}
-                            removeHeroClicked={this.handleRemoveHero} />
-                    </div>
-                )
-            } else { // not assigning heroes
-                return (
-                    <div>
-                        <CurrentPlayer player={this.state.player} />
-                        <br />
-                        <AvailableMissions player={this.state.player}
-                            assignHeroesClicked={this.handleAssignHeroes}
-                            missionCompleteCallback={this.refresh}/>
-                        <br />
-                        <AvailableHeroes player={this.state.player}
-                            isAssignHeroes={false}
-                            assignedHeroes={this.state.assignedHeroes}
-                            assignHeroClicked={this.handleAssignHero}
-                            heroes={this.state.heroes}
-                            heroesToPlayer={this.state.heroesToPlayer} />
-                    </div>
-                )
-            }
+            return (
+                <div>
+                    <CurrentPlayer player={this.state.player} />
+                    <br />
+                    <AvailableMissions player={this.state.player}
+                        assignHeroesClicked={this.handleAssignHeroes}
+                        missionCompleteCallback={this.refresh}
+                        displayed={!this.state.isMissionSelected} />
+                    <br />
+                    <AvailableHeroes player={this.state.player}
+                        isAssignHeroes={this.state.isMissionSelected}
+                        assignedHeroes={this.state.assignedHeroes}
+                        assignHeroClicked={this.handleAssignHero}
+                        heroes={this.state.heroes}
+                        heroesToPlayer={this.state.heroesToPlayer} />
+                    <br />
+                    <SelectedMission player={this.state.player}
+                        selectedMission={this.state.selectedMission}
+                        assignedHeroes={this.state.assignedHeroes}
+                        doneAssignHeroesClicked={this.handleDoneAssignHeroes}
+                        removeHeroClicked={this.handleRemoveHero}
+                        displayed={this.state.isMissionSelected} />
+                </div>
+            )
         } else { // data not loaded
             return (
                 <div>
@@ -233,11 +220,6 @@ class AvailableHeroRow extends Component {
         super(props)
 
         this.state = {
-            hero: this.props.hero,
-            player: this.props.player,
-            heroesToPlayer: this.props.heroesToPlayer,
-            isAssigning: this.props.isAssigning,
-            assignHeroClicked: this.props.assignHeroClicked,
             mission: null
         }
     }
@@ -247,7 +229,7 @@ class AvailableHeroRow extends Component {
     }
 
     checkIfHeroOnMission() {
-        fetch(`${missionUri}/byHero/${this.state.hero.id}?playerId=${this.state.player.id}`)
+        fetch(`${missionUri}/byHero/${this.props.hero.id}?playerId=${this.props.player.id}`)
             .then(res => res.json())
             .then(
                 (data) => {
@@ -263,7 +245,7 @@ class AvailableHeroRow extends Component {
     }
 
     applyAdjustedHeroSkill(hero) {
-        let matches = this.state.heroesToPlayer.filter(
+        let matches = this.props.heroesToPlayer.filter(
             function (element) {
                 return (element.heroId === hero.id)
             }
@@ -279,16 +261,16 @@ class AvailableHeroRow extends Component {
         if (this.state.mission != null) {
             buttonElement = <td>Currently on mission: {this.state.mission.name}</td>
         } else {
-            if (this.state.isAssigning) {
-                buttonElement = <td><button onClick={() => this.state.assignHeroClicked(this.state.hero)}>Assign hero</button></td>
+            if (this.props.isAssigning) {
+                buttonElement = <td><button onClick={() => this.props.assignHeroClicked(this.props.hero)}>Assign hero</button></td>
             }
         }
 
         return (
             <>
-                <td>{this.state.hero.name}</td>
-                <td>{this.applyAdjustedHeroSkill(this.state.hero)}</td>
-                <td>{this.state.hero.hireCost} coins</td>
+                <td>{this.props.hero.name}</td>
+                <td>{this.applyAdjustedHeroSkill(this.props.hero)}</td>
+                <td>{this.props.hero.hireCost} coins</td>
                 {buttonElement}
             </>
         )
@@ -296,35 +278,24 @@ class AvailableHeroRow extends Component {
 }
 
 class SelectedMission extends Component {
-    constructor(props) {
-        super(props)
-
-        this.state = {
-            player: this.props.player,
-            selectedMission: this.props.selectedMission,
-            assignedHeroes: this.props.assignedHeroes,
-            doneAssignHeroesClicked: this.props.doneAssignHeroesClicked,
-            removeHeroClicked: this.props.removeHeroClicked
-        }
-    }
 
     handleCancelClick(event) {
-        this.state.doneAssignHeroesClicked()
+        this.props.doneAssignHeroesClicked()
         event.preventDefault()
     }
 
     handleRemoveClicked(hero, event) {
-        this.state.removeHeroClicked(hero)
+        this.props.removeHeroClicked(hero)
         event.preventDefault()
     }
 
     handleBeginMissionClick(event) {
         let heroIds = []
-        this.state.assignedHeroes.forEach(hero => {
+        this.props.assignedHeroes.forEach(hero => {
             heroIds.push(hero.id)
         })
 
-        fetch(`${missionUri}/startMission/${this.state.selectedMission.id}?playerId=${this.state.player.id}`, {
+        fetch(`${missionUri}/startMission/${this.props.selectedMission.id}?playerId=${this.props.player.id}`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -334,7 +305,7 @@ class SelectedMission extends Component {
         })
             .then(res => res.json())
             .then(() => {
-                    this.state.doneAssignHeroesClicked()
+                this.props.doneAssignHeroesClicked()
                 },
                 (error) => {
                     this.setState({
@@ -347,11 +318,11 @@ class SelectedMission extends Component {
 
     render() {
         let currentSkill = 0
-        this.state.assignedHeroes.forEach((hero) => {
+        this.props.assignedHeroes.forEach((hero) => {
             currentSkill += hero.playerAdjustedSkill
         })
 
-        const assignedHeroesItems = this.state.assignedHeroes.map((hero) => 
+        const assignedHeroesItems = this.props.assignedHeroes.map((hero) =>
             <tr key={hero.id}>
                 <td>{hero.name}</td>
                 <td>{hero.playerAdjustedSkill} skill</td>
@@ -359,22 +330,25 @@ class SelectedMission extends Component {
             </tr>
         )
 
-        let beginMissionButton = null
-        if (currentSkill >= this.state.selectedMission.skillCost) {
-            beginMissionButton =
-                <>
-                    < br />
-                    <button onClick={(e) => this.handleBeginMissionClick(e)}>Begin Mission</button>
-                </>
-        } else {
-            beginMissionButton = <></>
-        }
+        let mainBody = null
 
-        return (
-            <div className="panel box-shadow">
-                <b>Mission: {this.state.selectedMission.name}</b>
+        if (this.props.selectedMission !== null) {
+            let beginMissionButton = null
+            if (currentSkill >= this.props.selectedMission.skillCost) {
+                beginMissionButton =
+                    <>
+                        < br />
+                        <button onClick={(e) => this.handleBeginMissionClick(e)}>Begin Mission</button>
+                    </>
+            } else {
+                beginMissionButton = <></>
+            }
+
+            mainBody = 
+                <>
+                <b>Mission: {this.props.selectedMission.name}</b>
                 <br /><br />
-                Skill: {currentSkill} / { this.state.selectedMission.skillCost }
+                Skill: {currentSkill} / { this.props.selectedMission.skillCost}
                 <br /><br />
                 <b>Heroes on Mission</b>
                 <br /><br />
@@ -386,6 +360,16 @@ class SelectedMission extends Component {
                 {beginMissionButton}
                 <br />
                 <button onClick={(e) => this.handleCancelClick(e)}>Cancel</button>
+                </>
+
+        } else {
+            mainBody = <></>
+        }
+
+
+        return (
+            <div className={`panel box-shadow fadeIn ${this.props.displayed ? '' : 'fadeOut'}`}>
+                {mainBody}
             </div>
         )
     }
